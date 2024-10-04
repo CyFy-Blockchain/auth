@@ -6,6 +6,7 @@ import { NestConfigModule } from '@config/nest.config.module';
 import databaseConfig from '@config/ormconfig';
 
 import { ServerHealthCheckModule } from '@server-health-check/server-health-check.module';
+import { UsersModule } from '@users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,13 @@ import { ServerHealthCheckModule } from '@server-health-check/server-health-chec
       {
         path: 'server-health-check',
         module: ServerHealthCheckModule,
+      },
+    ]),
+    UsersModule,
+    RouterModule.register([
+      {
+        path: 'users',
+        module: UsersModule,
       },
     ]),
   ],

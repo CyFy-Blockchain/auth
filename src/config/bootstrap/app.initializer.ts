@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 
 import { swaggerConfig } from '@config/swagger/swagger.config';
+import { dataSource } from '@config/datasource';
 
 import { AppModule } from '@app/app.module';
 
@@ -21,6 +22,10 @@ export async function initializeApp(): Promise<void> {
   SwaggerModule.setup('api', app, document, {
     jsonDocumentUrl: 'swagger/json',
   });
+
+  // initializing db
+  await dataSource.initialize();
+  console.info(`Data source has been initialized`);
 
   await app.listen(process.env.PORT || 3000, () => {
     console.info(`Server running on Port: ${process.env.PORT}`);
