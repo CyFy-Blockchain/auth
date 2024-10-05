@@ -23,10 +23,6 @@ export async function initializeApp(): Promise<void> {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  // initializing db
-  await dataSource.initialize();
-  console.info(`Data source has been initialized`);
-
   await app.listen(process.env.PORT || 3000, () => {
     console.info(`Server running on Port: ${process.env.PORT}`);
   });
