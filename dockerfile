@@ -13,6 +13,13 @@ RUN npm install
 # Copy the rest of your application code
 COPY . .
 
+# Set default environment variables
+ENV DB_USERNAME=postgres
+ENV DB_PASSWORD=postgres
+ENV DB_NAME=auth_db
+ENV DB_PORT=5432
+ENV PORT=3000
+
 # Create a build of your application
 RUN npm run build
 
