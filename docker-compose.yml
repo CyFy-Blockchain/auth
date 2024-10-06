@@ -17,6 +17,10 @@ services:
       - ./data/postgres:/var/lib/postgresql/data
 
   app:
+    deploy:
+      resources:
+        limits:
+          memory: 1g # Limit memory to 1GB
     build:
       context: . # Point to the root context
     env_file:
