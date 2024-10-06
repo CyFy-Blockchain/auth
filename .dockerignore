@@ -1,0 +1,5 @@
+# Exclude PostgreSQL data directory
+data/postgres
+
+# Exclude .env files
+.env
