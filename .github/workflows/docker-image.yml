@@ -41,7 +41,7 @@ jobs:
 
       - name: Build and Push Docker Images
         env:
-          IMAGE_NAME: mha1o/cyfy-auth-app # Set your image name
+          IMAGE_NAME: mha1o/cyfy # Set your image name
         run: |
           docker-compose build
           docker tag auth_app:latest $IMAGE_NAME:latest  # Tag the image
