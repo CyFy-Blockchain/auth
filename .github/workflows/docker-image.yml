@@ -35,6 +35,12 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Set up Docker Compose
+        env:
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: auth_db
+          DB_PORT: 5432
+          PORT: 3000
         run: |
           docker-compose up -d
           docker-compose ps
