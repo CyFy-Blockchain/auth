@@ -1,13 +1,29 @@
 version: '3.8'
 services:
+
   postgres:
     image: postgres
+    env_file:
+      - .env # Update to point to the .env file in the root directory
     container_name: auth_postgres_db
+    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - '5435:5432'
+      - '5433:5432'
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: . # Point to the root context
+    env_file:
+      - .env # Update to point to the .env file in the root directory
+    container_name: auth_app
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - '${PORT}:${PORT}'
