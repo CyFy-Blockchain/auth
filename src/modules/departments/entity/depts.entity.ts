@@ -1,3 +1,4 @@
+import { DeptKeychain } from '@baseModules/deptKeychain/entity/deptKeychain.entity';
 import { Organisations } from '@baseModules/organisations/entity/orgs.entity';
 import { User } from '@baseModules/users/entities/users.entity';
 import {
@@ -6,7 +7,7 @@ import {
   BaseEntity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'departments' })
@@ -17,9 +18,11 @@ export class Departments extends BaseEntity {
   @Column({ nullable: false })
   deptName: string;
 
-  @ManyToOne(() => Organisations, (org) => org.childDepts)
-  parentOrg: Organisations;
+  @ManyToOne(() => Organisations, (org) => org.childDepts, {
+    onDelete: 'CASCADE',
+  })
+  parentOrg?: Organisations;
 
-  @ManyToMany(() => User, (user) => user.departments)
-  users: User[];
+  @OneToMany(() => DeptKeychain, (deptKeychain) => deptKeychain.department)
+  deptKeychains?: DeptKeychain[];
 }

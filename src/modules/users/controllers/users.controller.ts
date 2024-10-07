@@ -1,5 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Get, Param } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 
@@ -43,5 +43,11 @@ export class UsersController {
   })
   async createUser(@Body() user: UserRegistration): Promise<User> {
     return await this.usersService.addUser(user);
+  }
+
+  @Get('/:id')
+  @ApiParam({ name: 'id', example: '' })
+  async fetchUser(@Param('id') id: string) {
+    return await this.usersService.fetchUser(id);
   }
 }

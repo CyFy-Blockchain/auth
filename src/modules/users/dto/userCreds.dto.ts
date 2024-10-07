@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 class UserRequired {
   @ApiProperty({ example: 'admin', required: true })
@@ -8,9 +8,9 @@ class UserRequired {
   username: string;
 
   @ApiProperty({ example: 'org1', required: true })
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
-  department: string;
+  departmentId: string;
 }
 
 export class UserCredentials extends UserRequired {

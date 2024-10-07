@@ -2,11 +2,11 @@ import {
   Column,
   Entity,
   BaseEntity,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
-  JoinTable,
 } from 'typeorm';
 import { Departments } from '@baseModules/departments/entity/depts.entity';
+import { DeptKeychain } from '@baseModules/deptKeychain/entity/deptKeychain.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -19,10 +19,10 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   privateKey: string;
 
-  // Remove @Column() for relationships
-  @ManyToMany(() => Departments, (dept) => dept.users, { cascade: true })
-  @JoinTable()
-  departments: Departments[];
+  @OneToMany(() => DeptKeychain, (deptKeychain) => deptKeychain.user, {
+    onDelete: 'CASCADE',
+  })
+  deptKeychains?: DeptKeychain[];
 
   @Column({ nullable: true }) // Optional publicKey
   publicKey?: string;

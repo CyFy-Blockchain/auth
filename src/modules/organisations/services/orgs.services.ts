@@ -30,8 +30,10 @@ export class OrgService {
   }
 
   async createOrg(org: RegisterOrg): Promise<Organisations> {
-    // fetch parent org from DB
-    const parentOrg = await this.getOrgById(org.parentOrgId);
+    // fetch parent org from DB if parent org exists
+    const parentOrg = org.parentOrgId
+      ? await this.getOrgById(org.parentOrgId)
+      : null;
 
     // save new org with relation
     return await this.orgsRepository.save(
@@ -40,5 +42,11 @@ export class OrgService {
         parentOrg: parentOrg,
       }),
     );
+  }
+
+  async deleteOrgById(id: string) {
+    await this.getOrgById(id); // throws error if not found
+
+    return await this.orgsRepository.delete(id);
   }
 }

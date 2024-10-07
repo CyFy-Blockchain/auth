@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class RegisterOrg {
   @ApiProperty({ example: 'CyFy', required: true })
@@ -7,8 +7,8 @@ export class RegisterOrg {
   @IsNotEmpty()
   orgName: string;
 
-  @ApiProperty({ example: '2' })
+  @ApiProperty({ example: '82d4d3de-642d-461a-90f4-a15cd53d6ca8' })
   @IsOptional()
-  @IsNotEmpty()
+  @IsUUID()
   parentOrgId?: string;
 }
