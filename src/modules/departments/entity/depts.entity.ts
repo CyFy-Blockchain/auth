@@ -1,6 +1,6 @@
 import { DeptKeychain } from '@baseModules/deptKeychain/entity/deptKeychain.entity';
 import { Organisations } from '@baseModules/organisations/entity/orgs.entity';
-import { User } from '@baseModules/users/entities/users.entity';
+
 import {
   Column,
   Entity,

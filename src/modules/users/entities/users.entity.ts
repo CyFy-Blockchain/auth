@@ -5,7 +5,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Departments } from '@baseModules/departments/entity/depts.entity';
 import { DeptKeychain } from '@baseModules/deptKeychain/entity/deptKeychain.entity';
 
 @Entity({ name: 'users' })
