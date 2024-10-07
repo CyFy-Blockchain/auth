@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 
-import { ServerHealthCheckService } from '@server-health-check/services/server-health-check.services';
+import { ServerHealthCheckService } from '@baseModules/server-health-check/services/server-health-check.services';
 
 @ApiTags(SWAGGER_TAGS.HEALTH_CHECK)
 @Controller()

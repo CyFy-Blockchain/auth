@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 
 import { swaggerConfig } from '@config/swagger/swagger.config';
-import { dataSource } from '@config/datasource';
 
-import { AppModule } from '@app/app.module';
+import { AppModule } from '../../app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 /**
  * Initializes the Nest application and sets up the global prefix for all routes.
@@ -16,6 +16,9 @@ export async function initializeApp(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   // Set global prefix for all routes
   app.setGlobalPrefix('api/v1');
+
+  // input validation
+  app.useGlobalPipes(new ValidationPipe());
 
   // setting up swagger UI
   const document = SwaggerModule.createDocument(app, swaggerConfig);
