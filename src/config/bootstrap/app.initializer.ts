@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 
 import { swaggerConfig } from '@config/swagger/swagger.config';
-import { dataSource } from '@config/datasource';
 
 import { AppModule } from '@app/app.module';
 
