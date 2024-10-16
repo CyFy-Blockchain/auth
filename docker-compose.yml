@@ -13,7 +13,7 @@ services:
       DB_NAME: ${DB_NAME:-auth_db}
       PORT: ${PORT:-5432}
     ports:
-      - '${DB_PORT:-5433}:${DB_PORT:-5432}' # Host port 5433, container port 5432
+      - ${DB_PORT:-5433}:${DB_PORT:-5432} # Host port 5433, container port 5432
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
@@ -31,4 +31,4 @@ services:
     depends_on:
       - postgres
     ports:
-      - '${PORT:-3000}:${PORT:-3000}' # Expose the application port
+      - ${PORT:-3000}:${PORT:-3000} # Expose the application port
