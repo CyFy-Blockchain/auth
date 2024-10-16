@@ -20,6 +20,5 @@ export const databaseConfig: DataSourceOptions = {
       }
     : {}),
 };
-console.info('🚀 ~ databaseConfig:', databaseConfig);
 
 export default databaseConfig;
