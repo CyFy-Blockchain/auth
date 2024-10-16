@@ -38,8 +38,8 @@ jobs:
         env:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          PORT: ${{ secrets.PORT }}
+          DB_PORT: 5432
+          PORT: 3000
         run: |
           docker-compose up -d
           docker-compose ps
