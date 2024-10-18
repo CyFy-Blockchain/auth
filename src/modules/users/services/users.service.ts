@@ -2,8 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { User } from '@users/entities/users.entity';
-import { STRINGS } from '@app/constants/strings';
+import { strings } from '@app/constants/strings';
+import { User } from '../entities/users.entity';
+import { FetchUser, RegisterUser } from '../dto/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,7 @@ export class UsersService {
       where: { username: userId },
     });
     if (!user)
-      throw new HttpException(STRINGS.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
     return user;
   }
@@ -35,7 +36,7 @@ export class UsersService {
    * @param user - The user object to be added.
    * @returns The newly added user.
    */
-  async addUser(user: User): Promise<User> {
+  async addUser(user: RegisterUser): Promise<FetchUser> {
     return await this.usersRepository.save(
       this.usersRepository.create({ username: user.username }),
     );
