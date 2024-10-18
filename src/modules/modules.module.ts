@@ -1,8 +1,8 @@
 import { DynamicModule, ForwardReference, Module, Type } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
-import { ServerHealthCheckModule } from '@server-health-check/server-health-check.module';
-import { UsersModule } from '@users/users.module';
+import { OrgsModule } from './orgs/orgs.module';
+import { UsersModule } from './users/users.module';
 
 type NestModuleType =
   | Type<any>
@@ -27,8 +27,8 @@ function getModuleWithPath(
 
 @Module({
   imports: [
-    ...getModuleWithPath('server-health-check', ServerHealthCheckModule),
     ...getModuleWithPath('users', UsersModule),
+    ...getModuleWithPath('organizations', OrgsModule),
   ],
 })
 export class ControllerModule {}

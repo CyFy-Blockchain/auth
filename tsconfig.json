@@ -21,9 +21,7 @@
     "paths": {
       "@app/*": ["src/*"],
       "@config/*": ["src/config/*"],
-      "@baseModules/*": ["src/modules/*"],
-      "@server-health-check/*": ["src/modules/server-health-check/*"],
-      "@users/*": ["src/modules/users/*"]
+      "@baseModules/*": ["src/modules/*"]
     }
   }
 }
