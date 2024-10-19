@@ -10,7 +10,7 @@ export const swaggerConfig = new DocumentBuilder()
   .setVersion('1.0.0')
   .addServer('http://localhost:4000', 'Local environment')
   .addApiKey(
-    { type: 'apiKey', name: 'x-api-key', in: 'header' },
-    'api-gateway-key',
+    { type: 'apiKey', name: 'token', in: 'header' },
+    'User token for authentication',
   )
   .build();
