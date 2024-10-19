@@ -1,15 +1,16 @@
 import { DataSourceOptions } from 'typeorm';
+import { envVar } from './env/default';
 
-const isProduction =
-  process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging';
+const isProduction = envVar.env === 'production' || envVar.env === 'staging';
+const dbEnv = envVar.db;
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT, 10) || 5435,
-  username: process.env.DB_USERNAME || '',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || '',
+  host: dbEnv.host || 'localhost',
+  port: parseInt(dbEnv.port, 10) || 5435,
+  username: dbEnv.username || '',
+  password: dbEnv.password || '',
+  database: dbEnv.database || '',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
   synchronize: !isProduction,
