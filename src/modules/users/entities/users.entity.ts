@@ -20,11 +20,14 @@ export class User extends BaseEntity {
   @Column({ name: 'public_key', nullable: false })
   publicKey: string;
 
-  @Column({ name: 'private_key', nullable: false })
+  @Column({ name: 'private_key', nullable: false, select: false })
   privateKey: string;
 
   @Column({ name: 'is_admin', nullable: false, type: Boolean })
   isAdmin: boolean;
+
+  @Column({ name: 'recoverable_key', nullable: false, select: false })
+  recoverableKey: string;
 
   @ManyToOne(() => Organization, (org) => org.members, { nullable: false })
   organization: Organization;

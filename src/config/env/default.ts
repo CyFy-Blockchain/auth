@@ -9,6 +9,7 @@ export const envVar = {
   },
   server: {
     port: process.env.PORT || 4000,
+    recoverable_encryption_key: process.env.RECOVERABLE_ENCRYPTION_KEY,
   },
   fabric: {
     gatewayBaseUrl: process.env.FABRIC_GW_BASE_URL,

@@ -3,6 +3,7 @@ import { RouterModule } from '@nestjs/core';
 
 import { OrgsModule } from './orgs/orgs.module';
 import { UsersModule } from './users/users.module';
+import { AdminModule } from './admin/admin.module';
 
 type NestModuleType =
   | Type<any>
@@ -29,6 +30,7 @@ function getModuleWithPath(
   imports: [
     ...getModuleWithPath('users', UsersModule),
     ...getModuleWithPath('organizations', OrgsModule),
+    ...getModuleWithPath('admins', AdminModule),
   ],
 })
 export class ControllerModule {}

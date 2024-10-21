@@ -13,5 +13,6 @@ import { OrgsModule } from '../orgs/orgs.module';
   imports: [TypeOrmModule.forFeature([User]), AuthMappingModule, OrgsModule],
   controllers: [UsersController],
   providers: [UsersService, CipherService, AxiosService],
+  exports: [UsersService],
 })
 export class UsersModule {}
