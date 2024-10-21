@@ -9,7 +9,6 @@ import {
   SigninUserResponse,
   RegisterUserRequest,
 } from '../dto/users.dto';
-import { User } from '../entities/users.entity';
 
 @ApiTags(SWAGGER_TAGS.USERS)
 @Controller()
