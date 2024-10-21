@@ -7,10 +7,10 @@ import { User } from '../entities/users.entity';
 import {
   SigninUserRequest,
   SigninUserResponse,
-  RegisterUserRequest,
-  RegisterUserResponse,
   CreateUser,
   UserPki,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
 } from '../dto/users.dto';
 import { CipherService } from '@app/modules/shared/cipher.service';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
@@ -35,9 +35,7 @@ export class UsersService {
     orgName: string,
     password: string,
   ): Promise<UserPki> {
-    const user = await this.usersRepository.findOne({
-      where: { username: userId, organization: { name: orgName } },
-    });
+    const user = await this.fetchOrgUser(userId, orgName);
     if (!user)
       throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
@@ -55,9 +53,9 @@ export class UsersService {
     }
   }
 
-  async fetchUserByUsername(username: string): Promise<User> {
+  async fetchOrgUser(username: string, orgName: string): Promise<User> {
     return await this.usersRepository.findOne({
-      where: { username: username },
+      where: { username: username, organization: { name: orgName } },
     });
   }
 
@@ -77,7 +75,7 @@ export class UsersService {
         recoverableKey: this.cipherService.encrypt(user.privateKey, encKey),
         publicKey: user.publicKey,
         organization: org,
-        isAdmin: user.isAdmin ?? false,
+        userRole: user.userRole,
       }),
     );
   }
@@ -105,42 +103,30 @@ export class UsersService {
     return { token: authUUID.id }; // replace with actual JWT token
   }
 
-  async registerUser(user: RegisterUserRequest): Promise<RegisterUserResponse> {
-    // check if the username already exists
-    const userDb = await this.fetchUserByUsername(user.username);
-    if (userDb) {
-      throw new HttpException(strings.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
+  async updatePassword(
+    body: UpdatePasswordRequest,
+  ): Promise<UpdatePasswordResponse> {
+    const user = await this.fetchOrgUser(body.username, body.orgName);
+    if (!user) {
+      throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    // convert Auth UUID to Fabric UUID
-    const fabricUUID = await this.authMappingService.fetchFabricUserUUID(
-      user.token,
+    const pki = await this.fetchUserPki(
+      body.username,
+      body.orgName,
+      body.oldPassword,
     );
 
-    // POST Fabric to create account on HLF
-    const registerBody = {
-      username: user.username,
-      orgName: user.orgName,
-    };
-    const response = await this.axiosService.post(
-      '/api/v1/auth/signup',
-      registerBody,
+    await this.usersRepository.update(
+      { id: user.id },
       {
-        headers: { authorization: fabricUUID },
+        privateKey: this.cipherService.encrypt(
+          pki.privateKey,
+          body.newPassword,
+        ),
       },
     );
 
-    // save user to DB
-    await this.addUserInDb({
-      username: user.username,
-      orgName: user.orgName,
-      password: response.secret,
-      privateKey: response.privateKey,
-      publicKey: response.publicKey,
-      isAdmin: user.isAdmin,
-    });
-
-    // respond with secret
-    return { secret: response.secret };
+    return { message: strings.PASSWORD_UPDATED };
   }
 }
