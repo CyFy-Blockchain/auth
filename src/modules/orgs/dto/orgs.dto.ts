@@ -5,7 +5,7 @@ export class CreateOrg {
   name: string;
 }
 
-export class FetchOrg extends CreateOrg {
+export class OrgDto extends CreateOrg {
   @ApiProperty({
     example: '677e7abf-a71e-4a3e-84b2-5baf2b1d9651',
     required: true,

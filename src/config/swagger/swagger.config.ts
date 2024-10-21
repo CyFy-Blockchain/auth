@@ -5,8 +5,8 @@ import { DocumentBuilder } from '@nestjs/swagger';
  * @returns The configured Swagger documentation.
  */
 export const swaggerConfig = new DocumentBuilder()
-  .setTitle('Fabric Gateway - CyFy Documentation')
-  .setDescription('This documentation is for Fabric Gateway documentation')
+  .setTitle('Auth - CyFy Documentation')
+  .setDescription('This documentation is for Auth documentation')
   .setVersion('1.0.0')
   .addServer('http://localhost:4000', 'Local environment')
   .addApiKey(

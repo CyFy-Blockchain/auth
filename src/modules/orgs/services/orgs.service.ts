@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Organization } from '../entities/orgs.entity';
-import { CreateOrg, FetchOrg } from '../dto/orgs.dto';
+import { CreateOrg, OrgDto } from '../dto/orgs.dto';
 import { strings } from '@app/constants/strings';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class OrgsService {
     private orgsRepository: Repository<Organization>,
   ) {}
 
-  async fetchOrg(name: string): Promise<FetchOrg> {
+  async fetchOrg(name: string): Promise<OrgDto> {
     const org = await this.orgsRepository.findOne({
       where: [{ name: name }],
     });
@@ -24,7 +24,7 @@ export class OrgsService {
     return org;
   }
 
-  async createOrg(args: CreateOrg): Promise<FetchOrg> {
+  async createOrg(args: CreateOrg): Promise<OrgDto> {
     const org = await this.orgsRepository.findOne({
       where: { name: args.name },
     });

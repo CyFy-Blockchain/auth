@@ -1,4 +1,4 @@
-import { AdminLoginRequest } from '@app/modules/users/dto/users.dto';
+import { AdminLoginRequest } from '@app/modules/admin/dto/admin.dto';
 
 // User Signup
 export interface RegisterUserRequestBody {
