@@ -3,7 +3,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 import { OrgsService } from '../services/orgs.service';
-import { CreateOrg, FetchOrg } from '../dto/orgs.dto';
+import { CreateOrg, OrgDto } from '../dto/orgs.dto';
 
 @ApiTags(SWAGGER_TAGS.ORGS)
 @Controller()
@@ -19,7 +19,7 @@ export class OrgsController {
     type: String,
     description: 'Name of the organization',
   })
-  async fetchOrg(@Param('name') name: string): Promise<FetchOrg> {
+  async fetchOrg(@Param('name') name: string): Promise<OrgDto> {
     return await this.orgsService.fetchOrg(name);
   }
 
@@ -28,9 +28,9 @@ export class OrgsController {
   @ApiResponse({
     status: 201,
     description: 'Org is created successfully',
-    type: FetchOrg,
+    type: OrgDto,
   })
-  async createUser(@Body() body: CreateOrg): Promise<FetchOrg> {
+  async createUser(@Body() body: CreateOrg): Promise<OrgDto> {
     return await this.orgsService.createOrg(body);
   }
 }

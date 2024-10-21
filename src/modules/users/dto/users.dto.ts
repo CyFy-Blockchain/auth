@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { OrgDto } from '@app/modules/orgs/dto/orgs.dto';
 
 // POST -> Sign in user
 export class SigninUserResponse {
@@ -39,24 +41,13 @@ export class RegisterUserRequest {
   @IsNotEmpty()
   orgName: string;
 
+  @ApiProperty({ example: 'false', default: false })
+  @IsBoolean()
+  isAdmin?: boolean;
+
   @IsUUID()
   @IsNotEmpty()
   token: string;
-}
-
-// POST -> Admin login from Blockchain
-export class AdminLoginRequest {
-  @ApiProperty({ example: 'admin', required: true })
-  @IsNotEmpty()
-  username: string;
-
-  @ApiProperty({ example: 'adminpw', required: true })
-  @IsNotEmpty()
-  password: string;
-
-  @ApiProperty({ example: 'org1', required: true })
-  @IsNotEmpty()
-  orgName: string;
 }
 
 // Service Types
@@ -80,6 +71,53 @@ export class CreateUser {
   @ApiProperty({ example: 'org1', required: true })
   @IsNotEmpty()
   orgName: string;
+
+  @ApiProperty({ example: 'false', default: false })
+  @IsBoolean()
+  isAdmin?: boolean;
+}
+
+export class UserDto {
+  @ApiProperty({
+    example: 'admin',
+    description: 'The username of the user',
+    required: true,
+  })
+  @IsNotEmpty()
+  username: string;
+
+  @ApiProperty({
+    example: 'publicKey',
+    description: 'The public key associated with the user',
+    required: true,
+  })
+  @IsNotEmpty()
+  publicKey: string;
+
+  @ApiProperty({
+    example: true,
+    description: 'Boolean value indicating if the user is an admin',
+    required: true,
+  })
+  @IsBoolean()
+  isAdmin: boolean;
+
+  @ApiProperty({
+    description: 'The organization associated with the user',
+    required: true,
+    type: () => OrgDto,
+  })
+  @ValidateNested()
+  @Type(() => OrgDto)
+  organization: OrgDto;
+
+  @ApiProperty({
+    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
+    description: 'The unique identifier for the user',
+    required: true,
+  })
+  @IsUUID()
+  id: string;
 }
 
 export class UserPki {

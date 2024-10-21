@@ -11,13 +11,14 @@ import {
   RegisterUserResponse,
   CreateUser,
   UserPki,
-  AdminLoginRequest,
 } from '../dto/users.dto';
 import { CipherService } from '@app/modules/shared/cipher.service';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { OrgsService } from '@app/modules/orgs/services/orgs.service';
+import { envVar } from '@app/config/env/default';
 
+const encKey = envVar.server.recoverable_encryption_key;
 @Injectable()
 export class UsersService {
   constructor(
@@ -29,13 +30,6 @@ export class UsersService {
     private orgService: OrgsService,
   ) {}
 
-  /**
-   * Finds a user by their unique identifier (username).
-   *
-   * @param userId - The unique identifier of the user to find.
-   * @returns The found user.
-   * @throws HttpException - If the user is not found.
-   */
   private async fetchUserPki(
     userId: string,
     orgName: string,
@@ -61,6 +55,12 @@ export class UsersService {
     }
   }
 
+  async fetchUserByUsername(username: string): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: { username: username },
+    });
+  }
+
   /**
    * Adds a new user to the system.
    *
@@ -74,9 +74,10 @@ export class UsersService {
       this.usersRepository.create({
         username: user.username,
         privateKey: this.cipherService.encrypt(user.privateKey, user.password),
+        recoverableKey: this.cipherService.encrypt(user.privateKey, encKey),
         publicKey: user.publicKey,
         organization: org,
-        isAdmin: false,
+        isAdmin: user.isAdmin ?? false,
       }),
     );
   }
@@ -88,7 +89,6 @@ export class UsersService {
       user.orgName,
       user.password,
     );
-    console.log('🚀 ~ UsersService ~ signinUser ~ userPki:', userPki);
 
     // create wallet on Blockchain using userPki
     const response = await this.axiosService.post(
@@ -107,9 +107,7 @@ export class UsersService {
 
   async registerUser(user: RegisterUserRequest): Promise<RegisterUserResponse> {
     // check if the username already exists
-    const userDb = await this.usersRepository.findOne({
-      where: { username: user.username },
-    });
+    const userDb = await this.fetchUserByUsername(user.username);
     if (userDb) {
       throw new HttpException(strings.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
     }
@@ -118,7 +116,6 @@ export class UsersService {
     const fabricUUID = await this.authMappingService.fetchFabricUserUUID(
       user.token,
     );
-    console.log('🚀 ~ UsersService ~ registerUser ~ fabricUUID:', fabricUUID);
 
     // POST Fabric to create account on HLF
     const registerBody = {
@@ -140,42 +137,10 @@ export class UsersService {
       password: response.secret,
       privateKey: response.privateKey,
       publicKey: response.publicKey,
+      isAdmin: user.isAdmin,
     });
 
     // respond with secret
     return { secret: response.secret };
-  }
-
-  async adminLogin(user: AdminLoginRequest): Promise<User> {
-    // fetch admin creds from blockchain
-    const response = await this.axiosService.post('/api/v1/auth/enroll', user);
-    console.log('🚀 ~ UsersService ~ adminLogin ~ response:', response);
-
-    // check if user exists
-    const userDb = await this.usersRepository.findOneBy({
-      username: user.username,
-      organization: { name: user.orgName },
-    });
-    if (userDb) {
-      await this.usersRepository.update(
-        { id: userDb.id },
-        {
-          privateKey: this.cipherService.encrypt(
-            response.privateKey,
-            user.password,
-          ),
-          publicKey: response.publickKey,
-        },
-      );
-      return this.usersRepository.findOneBy({ id: userDb.id });
-    }
-
-    return await this.addUserInDb({
-      username: user.username,
-      password: user.password,
-      orgName: user.orgName,
-      privateKey: response.privateKey,
-      publicKey: response.publickKey,
-    });
   }
 }
