@@ -9,16 +9,18 @@ import { AuthMapping } from '../entity/authMapping.entity';
 export class AuthMappingService {
   constructor(
     @InjectRepository(AuthMapping)
-    private orgsRepository: Repository<AuthMapping>,
+    private authMappingRepository: Repository<AuthMapping>,
   ) {}
 
   async addFabricUserUuid(fabricUserUUID: string) {
-    const authMapping = this.orgsRepository.create({ fabricUserUUID });
-    return await this.orgsRepository.save(authMapping);
+    const authMapping = this.authMappingRepository.create({
+      fabricUserUUID,
+    });
+    return await this.authMappingRepository.save(authMapping);
   }
 
   async fetchFabricUserUUID(authUUID: string) {
-    const authMapping = await this.orgsRepository.findOne({
+    const authMapping = await this.authMappingRepository.findOne({
       where: { id: authUUID },
     });
     if (!authMapping) {

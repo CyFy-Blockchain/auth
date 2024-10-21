@@ -1,7 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrgDto } from '@app/modules/orgs/dto/orgs.dto';
+import { UserRole } from './users.enum';
+
+// POST -> Update password
+export class UpdatePasswordRequest {
+  @ApiProperty({ example: 'org1', required: true })
+  @IsNotEmpty()
+  orgName: string;
+
+  @ApiProperty({ example: 'testUser', required: true })
+  @IsNotEmpty()
+  username: string;
+
+  @ApiProperty({ example: 'password', required: true })
+  @IsNotEmpty()
+  newPassword: string;
+
+  @ApiProperty({ example: 'oldPassword', required: true })
+  @IsNotEmpty()
+  oldPassword: string;
+}
+
+export class UpdatePasswordResponse {
+  @ApiProperty({ example: 'Password has been updated', required: true })
+  @IsNotEmpty()
+  message: string;
+}
 
 // POST -> Sign in user
 export class SigninUserResponse {
@@ -26,30 +52,6 @@ export class SigninUserRequest {
   password: string;
 }
 
-// POST -> Register user
-export class RegisterUserResponse {
-  @ApiProperty({ example: 'pswrd', required: true })
-  secret: string;
-}
-
-export class RegisterUserRequest {
-  @ApiProperty({ example: 'testUser', required: true })
-  @IsNotEmpty()
-  username: string;
-
-  @ApiProperty({ example: 'org1', required: true })
-  @IsNotEmpty()
-  orgName: string;
-
-  @ApiProperty({ example: 'false', default: false })
-  @IsBoolean()
-  isAdmin?: boolean;
-
-  @IsUUID()
-  @IsNotEmpty()
-  token: string;
-}
-
 // Service Types
 export class CreateUser {
   @ApiProperty({ example: 'admin', required: true })
@@ -72,9 +74,13 @@ export class CreateUser {
   @IsNotEmpty()
   orgName: string;
 
-  @ApiProperty({ example: 'false', default: false })
-  @IsBoolean()
-  isAdmin?: boolean;
+  @ApiProperty({
+    example: UserRole.Client,
+    enum: UserRole,
+    default: UserRole.Client,
+  })
+  @IsEnum(UserRole)
+  userRole?: UserRole;
 }
 
 export class UserDto {
@@ -95,12 +101,12 @@ export class UserDto {
   publicKey: string;
 
   @ApiProperty({
-    example: true,
-    description: 'Boolean value indicating if the user is an admin',
-    required: true,
+    example: UserRole.Client,
+    enum: UserRole,
+    default: UserRole.Client,
   })
-  @IsBoolean()
-  isAdmin: boolean;
+  @IsEnum(UserRole)
+  userRole?: UserRole;
 
   @ApiProperty({
     description: 'The organization associated with the user',

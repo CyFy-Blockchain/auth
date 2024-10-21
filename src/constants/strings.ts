@@ -8,4 +8,6 @@ export const strings = {
   ORG_INVALID_PARAMS: 'Invalid parameters, either is required: `id` or `name`',
 
   INVALID_TOKEN: 'Invalid token',
+
+  PASSWORD_UPDATED: 'Password has been updated',
 };

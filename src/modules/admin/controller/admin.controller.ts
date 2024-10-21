@@ -1,8 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
-import { AdminLoginRequest } from '../dto/admin.dto';
+import {
+  AdminLoginRequest,
+  RegisterUserRequest,
+  RegisterUserResponse,
+} from '../dto/admin.dto';
 import { AdminService } from '../services/admin.service';
 import { UserDto } from '@app/modules/users/dto/users.dto';
 
@@ -20,5 +24,19 @@ export class AdminController {
   })
   async adminLogin(@Body() user: AdminLoginRequest): Promise<UserDto> {
     return await this.adminService.adminLogin(user);
+  }
+
+  @Post('/register')
+  @ApiOperation({ summary: 'Register a new user in blockchain' })
+  @ApiResponse({
+    status: 201,
+    description: 'User is successfully registered in blockchain',
+    type: RegisterUserResponse,
+  })
+  async registerUser(
+    @Body() user: RegisterUserRequest,
+    @Headers('token') token: string,
+  ): Promise<RegisterUserResponse> {
+    return await this.adminService.registerUser({ ...user, token });
   }
 }
