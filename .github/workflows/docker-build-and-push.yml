@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - master
-      - setup/ci-cd
   pull_request:
     branches:
       - master
-      - setup/ci-cd
 
 jobs:
   docker:
