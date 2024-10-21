@@ -1,5 +1,4 @@
-import { strings } from '@app/constants/strings';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -36,36 +35,29 @@ export class CipherService {
 
   // Decrypt function: Takes a variable-length key and the encrypted message to decrypt
   decrypt(encryptedMessage: string, key: string): string {
-    try {
-      // Split the salt, IV, and encrypted message
-      const [salt, iv, encrypted] = encryptedMessage.split(':');
+    // Split the salt, IV, and encrypted message
+    const [salt, iv, encrypted] = encryptedMessage.split(':');
 
-      // Derive the same key from the original key and the salt
-      const derivedKey = crypto.pbkdf2Sync(
-        key,
-        Buffer.from(salt, 'hex'),
-        100000,
-        this.keyLength,
-        'sha256',
-      );
+    // Derive the same key from the original key and the salt
+    const derivedKey = crypto.pbkdf2Sync(
+      key,
+      Buffer.from(salt, 'hex'),
+      100000,
+      this.keyLength,
+      'sha256',
+    );
 
-      // Create a decipher using the derived key and IV
-      const decipher = crypto.createDecipheriv(
-        this.algorithm,
-        derivedKey,
-        Buffer.from(iv, 'hex'),
-      );
+    // Create a decipher using the derived key and IV
+    const decipher = crypto.createDecipheriv(
+      this.algorithm,
+      derivedKey,
+      Buffer.from(iv, 'hex'),
+    );
 
-      // Decrypt the message
-      let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-      decrypted += decipher.final('utf8');
+    // Decrypt the message
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
 
-      return decrypted; // Return the decrypted message
-    } catch (err) {
-      throw new HttpException(
-        strings.USER_INVALID_CREDENTIALS,
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    return decrypted; // Return the decrypted message
   }
 }

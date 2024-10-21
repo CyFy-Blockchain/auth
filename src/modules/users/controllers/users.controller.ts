@@ -1,13 +1,13 @@
-import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 import { UsersService } from '../services/users.service';
 import {
-  RegisterUserResponse,
   SigninUserRequest,
   SigninUserResponse,
-  RegisterUserRequest,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
 } from '../dto/users.dto';
 
 @ApiTags(SWAGGER_TAGS.USERS)
@@ -28,17 +28,16 @@ export class UsersController {
     return await this.usersService.signinUser(user);
   }
 
-  @Post('/register')
-  @ApiOperation({ summary: 'Register a new user in blockchain' })
+  @Post('/update_password')
+  @ApiOperation({ summary: 'Update the password of the user' })
   @ApiResponse({
     status: 201,
-    description: 'User is successfully registered in',
-    type: RegisterUserResponse,
+    description: 'Password has been updated',
+    type: UpdatePasswordResponse,
   })
-  async registerUser(
-    @Body() user: RegisterUserRequest,
-    @Headers('token') token: string,
-  ): Promise<RegisterUserResponse> {
-    return await this.usersService.registerUser({ ...user, token });
+  async updatePassword(
+    @Body() body: UpdatePasswordRequest,
+  ): Promise<UpdatePasswordResponse> {
+    return await this.usersService.updatePassword(body);
   }
 }

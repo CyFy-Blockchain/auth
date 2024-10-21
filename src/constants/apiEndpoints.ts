@@ -1,9 +1,11 @@
 import { AdminLoginRequest } from '@app/modules/admin/dto/admin.dto';
+import { UserRole } from '@app/modules/users/dto/users.enum';
 
 // User Signup
 export interface RegisterUserRequestBody {
   username: string;
   orgName: string;
+  role: UserRole;
 }
 
 export interface RegisterUserResponse {
@@ -25,7 +27,7 @@ export interface UserLoginResponse {
 // Admin Login
 export interface AdminLoginResponse {
   privateKey: string;
-  publickKey: string;
+  publicKey: string;
 }
 
 // Create a mapping interface for URLs
