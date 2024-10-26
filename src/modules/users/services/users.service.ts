@@ -41,9 +41,12 @@ export class UsersService {
 
     try {
       return {
-        publicKey: user.publicKey,
-        privateKey: this.cipherService.decrypt(user.privateKey, password),
-        orgName,
+        user: user,
+        pki: {
+          publicKey: user.publicKey,
+          privateKey: this.cipherService.decrypt(user.privateKey, password),
+          orgName,
+        },
       };
     } catch (err) {
       throw new HttpException(
@@ -82,7 +85,7 @@ export class UsersService {
 
   async signinUser(user: SigninUserRequest): Promise<SigninUserResponse> {
     // fetch user PKI from DB
-    const userPki = await this.fetchUserPki(
+    const { pki: userPki, user: userDb } = await this.fetchUserPki(
       user.username,
       user.orgName,
       user.password,
@@ -96,11 +99,12 @@ export class UsersService {
     const fabricUUID = response.userId;
 
     // generate UUID and store it against wallet UUID
-    const authUUID = await this.authMappingService.addFabricUserUuid(
+    const authMap = await this.authMappingService.addFabricUserUuid(
       fabricUUID,
+      userDb,
     );
 
-    return { token: authUUID.id }; // replace with actual JWT token
+    return { token: authMap.authUserUuid, refreshToken: authMap.refreshUuid };
   }
 
   async updatePassword(
@@ -111,7 +115,7 @@ export class UsersService {
       throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    const pki = await this.fetchUserPki(
+    const { pki } = await this.fetchUserPki(
       body.username,
       body.orgName,
       body.oldPassword,

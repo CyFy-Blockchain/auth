@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   Unique,
-  ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { UserRole } from '../dto/users.enum';
 import { AuthMapping } from '@app/modules/authMapping/entity/authMapping.entity';
@@ -41,6 +41,6 @@ export class User extends BaseEntity {
   @ManyToOne(() => Organization, (org) => org.members, { nullable: false })
   organization: Organization;
 
-  @ManyToMany(() => AuthMapping, (authMapping) => authMapping.users)
+  @OneToMany(() => AuthMapping, (authMapping) => authMapping.user)
   authMappings: AuthMapping[];
 }

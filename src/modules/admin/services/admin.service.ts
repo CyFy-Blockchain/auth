@@ -4,6 +4,8 @@ import { strings } from '@app/constants/strings';
 import { UsersService } from '@app/modules/users/services/users.service';
 import {
   AdminLoginRequest,
+  RecoverPasswordRequest,
+  RecoverPasswordResponse,
   RegisterUserRequest,
   RegisterUserResponse,
 } from '../dto/admin.dto';
@@ -12,13 +14,18 @@ import { mapUserToUserDto } from '@app/modules/users/dto/users.mapper';
 import { UserDto } from '@app/modules/users/dto/users.dto';
 import { UserRole } from '@app/modules/users/dto/users.enum';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
+import { envVar } from '@app/config/env/default';
+import { CipherService } from '@app/modules/shared/cipher.service';
+import { generateString } from '@app/utils/helper';
 
+const recoverableKey = envVar.server.recoverable_encryption_key;
 @Injectable()
 export class AdminService {
   constructor(
     private userService: UsersService,
     private axiosService: AxiosService,
     private authMappingService: AuthMappingService,
+    private cipherService: CipherService,
   ) {}
 
   async adminLogin(user: AdminLoginRequest): Promise<UserDto> {
@@ -52,6 +59,12 @@ export class AdminService {
 
   async registerUser(user: RegisterUserRequest): Promise<RegisterUserResponse> {
     // check if the token belongs to the admin
+    const tokenUser = await this.authMappingService.fetchUserByAuthUUID(
+      user.token,
+    );
+    if (!tokenUser || tokenUser.organization.name !== user.orgName) {
+      throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
+    }
 
     // check if the username already exists
     const userDb = await this.userService.fetchOrgUser(
@@ -93,5 +106,27 @@ export class AdminService {
 
     // respond with secret
     return { secret: response.secret };
+  }
+
+  async recoverUserPassword(
+    body: RecoverPasswordRequest,
+  ): Promise<RecoverPasswordResponse> {
+    const userPki = await this.userService.fetchOrgUser(
+      body.username,
+      body.orgName,
+    );
+    if (!userPki) {
+      throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const secret = generateString();
+
+    const decryptedKey = this.cipherService.decrypt(
+      userPki.recoverableKey,
+      recoverableKey,
+    );
+    userPki.privateKey = this.cipherService.encrypt(decryptedKey, secret);
+
+    return { secret };
   }
 }

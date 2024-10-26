@@ -3,6 +3,7 @@ import { IsEnum, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrgDto } from '@app/modules/orgs/dto/orgs.dto';
 import { UserRole } from './users.enum';
+import { User } from '../entities/users.entity';
 
 // POST -> Update password
 export class UpdatePasswordRequest {
@@ -36,6 +37,12 @@ export class SigninUserResponse {
     required: true,
   })
   token: string;
+
+  @ApiProperty({
+    example: '2d620505-e413-4d18-8877-b9fa3c484905',
+    required: true,
+  })
+  refreshToken: string;
 }
 
 export class SigninUserRequest {
@@ -127,7 +134,10 @@ export class UserDto {
 }
 
 export class UserPki {
-  privateKey: string;
-  publicKey: string;
-  orgName: string;
+  user: User;
+  pki: {
+    privateKey: string;
+    publicKey: string;
+    orgName: string;
+  };
 }
