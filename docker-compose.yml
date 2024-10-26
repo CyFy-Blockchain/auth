@@ -1,13 +1,34 @@
 version: '3.8'
 services:
+
   postgres:
     image: postgres
+    # env_file:
+    #   - .env # Update to point to the .env file in the root directory
     container_name: auth_postgres_db
+    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth_db
+      DB_USERNAME: ${DB_USERNAME:-postgres} # Default value if not set
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-auth_db}
+      PORT: ${PORT:-5432}
     ports:
-      - '5435:5432'
+      - ${DB_PORT:-5433}:${DB_PORT:-5432} # Host port 5433, container port 5432
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+
+  app:
+    deploy:
+      resources:
+        limits:
+          memory: 1g # Limit memory to 1GB
+    build:
+      context: . # Point to the root context
+    # env_file:
+    #   - .env # Update to point to the .env file in the root directory
+    container_name: auth_app
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - ${PORT:-3000}:${PORT:-3000} # Expose the application port
