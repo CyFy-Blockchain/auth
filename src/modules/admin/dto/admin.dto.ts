@@ -45,3 +45,23 @@ export class RegisterUserResponse {
   @ApiProperty({ example: 'pswrd', required: true })
   secret: string;
 }
+
+// PUT -> Recover user password
+export class RecoverPasswordRequest {
+  @ApiProperty({ example: 'testUser', required: true })
+  @IsNotEmpty()
+  username: string;
+
+  @ApiProperty({ example: 'org1', required: true })
+  @IsNotEmpty()
+  orgName: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  token: string;
+}
+
+export class RecoverPasswordResponse {
+  @ApiProperty({ example: 'pswrd', required: true })
+  secret: string;
+}

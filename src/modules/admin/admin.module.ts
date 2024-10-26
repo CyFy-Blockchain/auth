@@ -6,10 +6,11 @@ import { AxiosService } from '../shared/axios.service';
 import { AdminController } from './controller/admin.controller';
 import { AdminService } from './services/admin.service';
 import { AuthMappingModule } from '../authMapping/authMapping.module';
+import { CipherService } from '../shared/cipher.service';
 
 @Module({
   imports: [UsersModule, AuthMappingModule],
   controllers: [AdminController],
-  providers: [AxiosService, AdminService],
+  providers: [AxiosService, AdminService, CipherService],
 })
 export class AdminModule {}

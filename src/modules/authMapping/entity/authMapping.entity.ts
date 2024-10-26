@@ -4,7 +4,7 @@ import {
   Entity,
   BaseEntity,
   PrimaryGeneratedColumn,
-  ManyToMany,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity({ name: 'auth_mapping' })
@@ -13,8 +13,14 @@ export class AuthMapping extends BaseEntity {
   id: string;
 
   @Column({ name: 'fabric_gateway_uuid', nullable: false })
-  fabricUserUUID: string;
+  fabricUserUuid: string;
 
-  @ManyToMany(() => User, (user) => user.authMappings)
-  users: User[];
+  @Column({ name: 'auth_uuid', nullable: false })
+  authUserUuid: string;
+
+  @Column({ name: 'refresh_uuid', nullable: false })
+  refreshUuid: string;
+
+  @ManyToOne(() => User, (user) => user.authMappings)
+  user: User;
 }

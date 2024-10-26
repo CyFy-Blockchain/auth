@@ -1,9 +1,11 @@
-import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 import {
   AdminLoginRequest,
+  RecoverPasswordRequest,
+  RecoverPasswordResponse,
   RegisterUserRequest,
   RegisterUserResponse,
 } from '../dto/admin.dto';
@@ -38,5 +40,22 @@ export class AdminController {
     @Headers('token') token: string,
   ): Promise<RegisterUserResponse> {
     return await this.adminService.registerUser({ ...user, token });
+  }
+
+  @Put('/recover_password')
+  @ApiOperation({ summary: 'Update a user password for authentication' })
+  @ApiResponse({
+    status: 201,
+    description: 'Password has been successfully updated',
+    type: RecoverPasswordResponse,
+  })
+  async recoverPassword(
+    @Body() body: RecoverPasswordRequest,
+    @Headers('token') token: string,
+  ): Promise<RecoverPasswordResponse> {
+    return await this.adminService.recoverUserPassword({
+      ...body,
+      token: token,
+    });
   }
 }
