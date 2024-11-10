@@ -21,6 +21,6 @@ export class AuthMapping extends BaseEntity {
   @Column({ name: 'refresh_uuid', nullable: false })
   refreshUuid: string;
 
-  @ManyToOne(() => User, (user) => user.authMappings)
+  @ManyToOne(() => User, (user) => user.authMappings, { onDelete: 'CASCADE' })
   user: User;
 }
