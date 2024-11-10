@@ -42,7 +42,7 @@ export class AdminController {
     return await this.adminService.registerUser({ ...user, token });
   }
 
-  @Put('/recover_password')
+  @Put('/recover-password')
   @ApiOperation({ summary: 'Update a user password for authentication' })
   @ApiResponse({
     status: 201,

@@ -10,4 +10,6 @@ export const strings = {
   INVALID_TOKEN: 'Invalid token',
 
   PASSWORD_UPDATED: 'Password has been updated',
+
+  CONTRACT_CALL_FAILED: 'Contract call failed',
 };
