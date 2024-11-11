@@ -6,7 +6,9 @@ export function mapUserToUserDto(user: User): UserDto {
     id: user.id,
     username: user.username,
     publicKey: user.publicKey,
-    userRole: user.userRole,
-    organization: { id: user.organization.id, name: user.organization.name },
+    organization: {
+      id: user.department.organisation.id,
+      name: user.department.organisation.name,
+    },
   };
 }

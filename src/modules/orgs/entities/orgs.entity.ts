@@ -1,20 +1,28 @@
-import { User } from '@app/modules/users/entities/users.entity';
 import {
-  Column,
   Entity,
-  BaseEntity,
   PrimaryGeneratedColumn,
   OneToMany,
+  OneToOne,
+  JoinColumn,
+  Column,
 } from 'typeorm';
+import { Department } from '@app/modules/depts/entity/depts.entity';
+import { Admin } from '@app/modules/users/entities/users.entity';
 
-@Entity({ name: 'organizations' })
-export class Organization extends BaseEntity {
+@Entity()
+export class Organisation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  // Organisation has many departments
+  @OneToMany(() => Department, (department) => department.organisation)
+  departments: Department[];
+
+  // Organisation has 1 admin
+  @OneToOne(() => Admin)
+  @JoinColumn({ name: 'admin_id' })
+  admin: Admin;
+
   @Column({ nullable: false })
   name: string;
-
-  @OneToMany(() => User, (user) => user.organization)
-  members: User[];
 }

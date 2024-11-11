@@ -4,7 +4,7 @@ import {
   Entity,
   BaseEntity,
   PrimaryGeneratedColumn,
-  ManyToOne,
+  OneToOne,
 } from 'typeorm';
 
 @Entity({ name: 'auth_mapping' })
@@ -21,6 +21,7 @@ export class AuthMapping extends BaseEntity {
   @Column({ name: 'refresh_uuid', nullable: false })
   refreshUuid: string;
 
-  @ManyToOne(() => User, (user) => user.authMappings, { onDelete: 'CASCADE' })
+  // Each user has exactly one AuthMapping
+  @OneToOne(() => User, (user) => user.authMapping)
   user: User;
 }

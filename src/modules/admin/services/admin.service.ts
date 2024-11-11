@@ -12,7 +12,7 @@ import {
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { mapUserToUserDto } from '@app/modules/users/dto/users.mapper';
 import { UserDto } from '@app/modules/users/dto/users.dto';
-import { UserRole } from '@app/modules/users/dto/users.enum';
+import { AdminRole } from '@app/modules/users/dto/users.enum';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
 import { envVar } from '@app/config/env/default';
 import { CipherService } from '@app/modules/shared/cipher.service';
@@ -48,10 +48,10 @@ export class AdminService {
     const savedUser = await this.userService.addUserInDb({
       username: user.username,
       password: user.password,
-      orgName: user.orgName,
+      deptId: user.orgName,
       privateKey: response.privateKey,
       publicKey: response.publicKey,
-      userRole: UserRole.Admin,
+      userRole: AdminRole.Admin,
     });
 
     return mapUserToUserDto(savedUser);
@@ -62,7 +62,7 @@ export class AdminService {
     const tokenUser = await this.authMappingService.fetchUserByAuthUUID(
       user.token,
     );
-    if (!tokenUser || tokenUser.organization.name !== user.orgName) {
+    if (!tokenUser || tokenUser.department.organisation.name !== user.orgName) {
       throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
     }
 
@@ -97,7 +97,7 @@ export class AdminService {
     // save user to DB
     await this.userService.addUserInDb({
       username: user.username,
-      orgName: user.orgName,
+      deptId: user.orgName,
       password: response.secret,
       privateKey: response.privateKey,
       publicKey: response.publicKey,

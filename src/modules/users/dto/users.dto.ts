@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrgDto } from '@app/modules/orgs/dto/orgs.dto';
-import { UserRole } from './users.enum';
+import { AdminRole } from './users.enum';
 import { User } from '../entities/users.entity';
 
 // POST -> Update password
@@ -61,33 +61,23 @@ export class SigninUserRequest {
 
 // Service Types
 export class CreateUser {
-  @ApiProperty({ example: 'admin', required: true })
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty({ example: 'adminpw', required: true })
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({ example: 'public_key', required: true })
   @IsNotEmpty()
   publicKey: string;
 
-  @ApiProperty({ example: 'private_key', required: true })
   @IsNotEmpty()
   privateKey: string;
 
-  @ApiProperty({ example: 'org1', required: true })
   @IsNotEmpty()
-  orgName: string;
+  deptId: string;
 
-  @ApiProperty({
-    example: UserRole.Client,
-    enum: UserRole,
-    default: UserRole.Client,
-  })
-  @IsEnum(UserRole)
-  userRole?: UserRole;
+  @IsEnum(AdminRole)
+  userRole?: AdminRole;
 }
 
 export class UserDto {
@@ -106,14 +96,6 @@ export class UserDto {
   })
   @IsNotEmpty()
   publicKey: string;
-
-  @ApiProperty({
-    example: UserRole.Client,
-    enum: UserRole,
-    default: UserRole.Client,
-  })
-  @IsEnum(UserRole)
-  userRole?: UserRole;
 
   @ApiProperty({
     description: 'The organization associated with the user',

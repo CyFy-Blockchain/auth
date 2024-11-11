@@ -40,7 +40,7 @@ export class AuthMappingService {
   async fetchUserByAuthUUID(authUUID: string) {
     const authMapping = await this.authMappingRepository.findOne({
       where: { authUserUuid: authUUID },
-      relations: ['user.organization'],
+      relations: ['user.organization.department'],
     });
 
     return authMapping?.user;

@@ -2,15 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Organization } from '../entities/orgs.entity';
+import { Organisation } from '../entities/orgs.entity';
 import { CreateOrg, OrgDto } from '../dto/orgs.dto';
 import { strings } from '@app/constants/strings';
 
 @Injectable()
 export class OrgsService {
   constructor(
-    @InjectRepository(Organization)
-    private orgsRepository: Repository<Organization>,
+    @InjectRepository(Organisation)
+    private orgsRepository: Repository<Organisation>,
   ) {}
 
   async fetchOrg(name: string): Promise<OrgDto> {
@@ -21,7 +21,7 @@ export class OrgsService {
       throw new HttpException(strings.ORG_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    return org;
+    return { name: org.name, id: org.id };
   }
 
   async createOrg(args: CreateOrg): Promise<OrgDto> {

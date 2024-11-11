@@ -73,3 +73,23 @@ To show migrations
 ```bash
 npm run migration:show
 ```
+
+## 📘 DB Design
+
+This project uses TypeORM to manage associations between entities in a relational database. Below is an overview of the entities and their relationships, with TypeScript code examples for each.
+![DB Design Image](/assets/db-design.png)
+
+### 🗂 Entity Relationships:
+
+1. Organisation has a one-to-many relationship with Departments.
+2. Organisation has a one-to-one relationship with Admins.
+3. Departments have a one-to-many self-referencing relationship with other Departments (a parent department can have multiple child departments).
+4. Departments have a one-to-many relationship with Users.
+5. Users have a one-to-one relationship with Students.
+6. Users have a one-to-one relationship with Admins.
+
+### In summary:
+
+Each Organisation can have multiple Departments and a single Admin.
+Each Department can have multiple child departments, multiple students, and multiple admins.
+Users serves as a polymorphic association for both Students and Admins.

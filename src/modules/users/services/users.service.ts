@@ -16,9 +16,9 @@ import { CipherService } from '@app/modules/shared/cipher.service';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { OrgsService } from '@app/modules/orgs/services/orgs.service';
-import { envVar } from '@app/config/env/default';
+// import { envVar } from '@app/config/env/default';
 
-const encKey = envVar.server.recoverable_encryption_key;
+// const encKey = envVar.server.recoverable_encryption_key;
 @Injectable()
 export class UsersService {
   constructor(
@@ -58,7 +58,10 @@ export class UsersService {
 
   async fetchOrgUser(username: string, orgName: string): Promise<User> {
     return await this.usersRepository.findOne({
-      where: { username: username, organization: { name: orgName } },
+      where: {
+        username: username,
+        department: { organisation: { name: orgName } },
+      },
     });
   }
 
@@ -69,18 +72,20 @@ export class UsersService {
    * @returns The newly added user.
    */
   async addUserInDb(user: CreateUser): Promise<User> {
-    const org = await this.orgService.fetchOrg(user.orgName);
+    throw new Error('This function is yet to be implemented');
+    // const org = await this.orgService.fetchOrg(user.deptId);
 
-    return await this.usersRepository.save(
-      this.usersRepository.create({
-        username: user.username,
-        privateKey: this.cipherService.encrypt(user.privateKey, user.password),
-        recoverableKey: this.cipherService.encrypt(user.privateKey, encKey),
-        publicKey: user.publicKey,
-        organization: org,
-        userRole: user.userRole,
-      }),
-    );
+    // return await this.usersRepository.save(
+    //   this.usersRepository.create({
+    //     username: user.username,
+    //     privateKey: this.cipherService.encrypt(user.privateKey, user.password),
+    //     recoverableKey: this.cipherService.encrypt(user.privateKey, encKey),
+    //     publicKey: user.publicKey,
+    //     organization: org,
+    //     userRole: user.userRole,
+    //     department: new Department
+    //   }),
+    // );
   }
 
   async signinUser(user: SigninUserRequest): Promise<SigninUserResponse> {
