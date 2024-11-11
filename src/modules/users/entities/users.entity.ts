@@ -9,7 +9,7 @@ import {
 import { AuthMapping } from '@app/modules/authMapping/entity/authMapping.entity';
 import { Department } from '@app/modules/depts/entity/depts.entity';
 import { Organisation } from '@app/modules/orgs/entities/orgs.entity';
-import { AdminRole } from '@app/modules/users/dto/users.enum';
+import { UserRole } from '@app/modules/users/dto/users.enum';
 
 @Entity()
 export class User {
@@ -17,7 +17,7 @@ export class User {
   id: string;
 
   // User belongs to a Department
-  @ManyToOne(() => Department, (department) => department.students)
+  @ManyToOne(() => Department, (department) => department.users)
   @JoinColumn({ name: 'dept_id' })
   department: Department;
 
@@ -42,17 +42,21 @@ export class User {
 
   @Column({ name: 'recoverable_key', nullable: false })
   recoverableKey: string;
+
+  @Column({
+    name: 'user_role',
+    nullable: false,
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.Student,
+  })
+  userRole: UserRole;
 }
 
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  // Student belongs to one department
-  @ManyToOne(() => Department, (department) => department.admins)
-  @JoinColumn({ name: 'dept_id' })
-  department: Department;
 
   // A student is actually a user
   @OneToOne(() => User, (user) => user.userType)
@@ -65,26 +69,13 @@ export class Admin {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // Admin belongs to one department
-  @ManyToOne(() => Department, (department) => department.admins)
-  @JoinColumn({ name: 'dept_id' })
-  department: Department;
-
   // a single Admin can administer an entire organisation
   @OneToOne(() => Organisation, (organisation) => organisation.admin)
+  @JoinColumn({ name: 'org_id' })
   organisation?: Organisation;
 
   // An admin is actually a user
   @OneToOne(() => User, (user) => user.userType)
   @JoinColumn({ name: 'user_id' })
   user?: User;
-
-  @Column({
-    name: 'admin_role',
-    nullable: false,
-    type: 'enum',
-    enum: AdminRole,
-    default: AdminRole.User,
-  })
-  adminRole: AdminRole;
 }

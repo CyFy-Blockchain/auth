@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsUUID, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrgDto } from '@app/modules/orgs/dto/orgs.dto';
-import { AdminRole } from './users.enum';
+import { UserRole } from './users.enum';
 import { User } from '../entities/users.entity';
 
 // POST -> Update password
@@ -76,8 +76,8 @@ export class CreateUser {
   @IsNotEmpty()
   deptId: string;
 
-  @IsEnum(AdminRole)
-  userRole?: AdminRole;
+  @IsEnum(UserRole)
+  userRole?: UserRole;
 }
 
 export class UserDto {

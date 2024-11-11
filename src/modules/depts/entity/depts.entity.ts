@@ -1,5 +1,5 @@
 import { Organisation } from '@app/modules/orgs/entities/orgs.entity';
-import { Admin, User } from '@app/modules/users/entities/users.entity';
+import { User } from '@app/modules/users/entities/users.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -25,13 +25,9 @@ export class Department {
   @OneToMany(() => Department, (department) => department.parentDept)
   childDepartments: Department[];
 
-  // Department can have multiple users
+  // Department will have multiple users
   @OneToMany(() => User, (user) => user.department)
-  students: User[];
-
-  // Department can have multiple admins
-  @OneToMany(() => Admin, (admin) => admin.department)
-  admins: Admin[];
+  users: User[];
 
   // Reference to parent department (optional, used in case of nested departments)
   @ManyToOne(() => Department, (department) => department.childDepartments)

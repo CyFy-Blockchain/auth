@@ -1,12 +1,12 @@
 import { AdminLoginRequest } from '@app/modules/admin/dto/admin.dto';
 import { ContractCallRequest } from '@app/modules/contracts/dto/contracts.dto';
-import { AdminRole } from '@app/modules/users/dto/users.enum';
+import { UserRole } from '@app/modules/users/dto/users.enum';
 
 // User Signup
 export interface RegisterUserRequestBody {
   username: string;
   orgName: string;
-  role: AdminRole;
+  role: UserRole;
 }
 
 export interface RegisterUserResponse {

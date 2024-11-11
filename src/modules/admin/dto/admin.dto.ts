@@ -1,4 +1,4 @@
-import { AdminRole } from '@app/modules/users/dto/users.enum';
+import { UserRole } from '@app/modules/users/dto/users.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 
@@ -29,12 +29,12 @@ export class RegisterUserRequest {
   orgName: string;
 
   @ApiProperty({
-    example: AdminRole.User,
-    enum: AdminRole,
-    default: AdminRole.User,
+    example: UserRole.Student,
+    enum: UserRole,
+    default: UserRole.Student,
   })
-  @IsEnum(AdminRole)
-  userRole: AdminRole;
+  @IsEnum(UserRole)
+  userRole: UserRole;
 
   @IsUUID()
   @IsNotEmpty()

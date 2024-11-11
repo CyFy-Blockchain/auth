@@ -12,7 +12,7 @@ import {
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { mapUserToUserDto } from '@app/modules/users/dto/users.mapper';
 import { UserDto } from '@app/modules/users/dto/users.dto';
-import { AdminRole } from '@app/modules/users/dto/users.enum';
+import { UserRole } from '@app/modules/users/dto/users.enum';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
 import { envVar } from '@app/config/env/default';
 import { CipherService } from '@app/modules/shared/cipher.service';
@@ -51,7 +51,7 @@ export class AdminService {
       deptId: user.orgName,
       privateKey: response.privateKey,
       publicKey: response.publicKey,
-      userRole: AdminRole.Admin,
+      userRole: UserRole.Admin,
     });
 
     return mapUserToUserDto(savedUser);

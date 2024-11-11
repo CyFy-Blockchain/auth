@@ -72,7 +72,9 @@ export class UsersService {
    * @returns The newly added user.
    */
   async addUserInDb(user: CreateUser): Promise<User> {
-    throw new Error('This function is yet to be implemented');
+    throw new Error(
+      'This function is yet to be implemented' + JSON.stringify(user),
+    );
     // const org = await this.orgService.fetchOrg(user.deptId);
 
     // return await this.usersRepository.save(
