@@ -4,4 +4,5 @@ export const SWAGGER_TAGS = {
   ADMINS: 'Admins',
   ORGS: 'Organizations',
   CONTRACTS: 'Contracts',
+  DEPARTMENTS: 'Departments',
 };

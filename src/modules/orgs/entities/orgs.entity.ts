@@ -1,13 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  OneToOne,
-  JoinColumn,
-  Column,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, OneToMany, Column } from 'typeorm';
 import { Department } from '@app/modules/depts/entity/depts.entity';
-import { Admin } from '@app/modules/users/entities/users.entity';
 
 @Entity()
 export class Organisation {
@@ -18,11 +10,6 @@ export class Organisation {
   @OneToMany(() => Department, (department) => department.organisation)
   departments: Department[];
 
-  // Organisation has 1 admin
-  @OneToOne(() => Admin)
-  @JoinColumn({ name: 'admin_id' })
-  admin: Admin;
-
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   name: string;
 }

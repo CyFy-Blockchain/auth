@@ -14,7 +14,7 @@ import {
 @Unique(['organisation', 'name'])
 export class Department {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   // Department belongs to one Organisation
   @ManyToOne(() => Organisation, (organisation) => organisation.departments)
@@ -32,7 +32,7 @@ export class Department {
   // Reference to parent department (optional, used in case of nested departments)
   @ManyToOne(() => Department, (department) => department.childDepartments)
   @JoinColumn({ name: 'parent_dept_id' })
-  parentDept: Department;
+  parentDept?: Department;
 
   // Add other fields like name, etc.
   @Column({ nullable: false })
