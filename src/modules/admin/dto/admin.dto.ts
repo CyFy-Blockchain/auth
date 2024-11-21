@@ -1,6 +1,6 @@
 import { UserRole } from '@app/modules/users/dto/users.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 
 // POST -> Admin login from Blockchain
 export class AdminLoginRequest {
@@ -39,6 +39,22 @@ export class RegisterUserRequest {
   @IsUUID()
   @IsNotEmpty()
   token: string;
+
+  @ApiProperty({
+    example: 'HOD,Teacher,CS',
+    description:
+      'This defines the attributes the user can forward to any certificate it creates. This is only used if passed with userRole: admin. Clients can not create users',
+  })
+  @IsOptional()
+  attr: string;
+
+  @ApiProperty({ example: 'Computer Science', required: true })
+  @IsNotEmpty()
+  deptName: string;
+
+  @ApiProperty({ example: 'HOD', required: true })
+  @IsNotEmpty()
+  position: string;
 }
 
 export class RegisterUserResponse {

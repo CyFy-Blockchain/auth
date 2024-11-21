@@ -52,6 +52,8 @@ export class AdminService {
       privateKey: response.privateKey,
       publicKey: response.publicKey,
       userRole: UserRole.Admin,
+      position: 'Super Admin',
+      deptName: 'Admins',
     });
 
     return mapUserToUserDto(savedUser);
@@ -85,6 +87,10 @@ export class AdminService {
       username: user.username,
       orgName: user.orgName,
       role: user.userRole,
+      // certMetadata is added in the user's certificate. It defines the user's rights, and roles on a contract
+      // Fabric expects a comma separated metadata string
+      certMetadata: user.position + ',' + user.deptName,
+      attr: user.attr,
     };
     const response = await this.axiosService.post(
       '/api/v1/auth/signup',
@@ -102,6 +108,8 @@ export class AdminService {
       privateKey: response.privateKey,
       publicKey: response.publicKey,
       userRole: user.userRole,
+      position: user.position,
+      deptName: user.deptName,
     });
 
     // respond with secret

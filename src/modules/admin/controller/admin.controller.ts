@@ -18,7 +18,11 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post('/enroll')
-  @ApiOperation({ summary: 'Fetch admin PKI from Blockchain' })
+  @ApiOperation({
+    summary: 'Fetch admin PKI from Blockchain',
+    description:
+      'This Endpoint is only for the super admins to be enrolled on the HLF, so they are synced with the Auth DB. You should NOT use this endpoint for any users other than the ones that were used to bootstrap the HLF network.',
+  })
   @ApiResponse({
     status: 201,
     description: 'Admin PKI is successfully fetched',
