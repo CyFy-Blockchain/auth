@@ -19,6 +19,7 @@
     "migration:run": "npm run dotenv -- 'if [ \"$NODE_ENV\" = \"production\" ]; then npx typeorm migration:run -d ./dist/config/datasource.js; else npm run typeorm -- migration:run -d ./src/config/datasource.ts; fi'",
     "migration:revert": "npm run dotenv -- 'if [ \"$NODE_ENV\" = \"production\" ]; then npx typeorm migration:revert -d ./dist/config/datasource.js; else npm run typeorm -- migration:revert -d ./src/config/datasource.ts; fi'",
     "migration:show": "npm run dotenv -- 'if [ \"$NODE_ENV\" = \"production\" ]; then npx typeorm migration:show -d ./dist/config/datasource.js; else npm run typeorm -- migration:show -d ./src/config/datasource.ts; fi'",
+    "db:drop": "npm run dotenv -- 'if [ \"$NODE_ENV\" = \"production\" ]; then npx typeorm schema:drop -d ./dist/config/datasource.js; else npm run typeorm -- schema:drop -d ./src/config/datasource.ts; fi'",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
