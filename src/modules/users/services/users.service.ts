@@ -17,6 +17,7 @@ import { AuthMappingService } from '@app/modules/authMapping/services/authMappin
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { OrgsService } from '@app/modules/orgs/services/orgs.service';
 import { envVar } from '@app/config/env/default';
+import { mapUserToUserDto } from '../dto/users.mapper';
 
 const encKey = envVar.server.recoverable_encryption_key;
 @Injectable()
@@ -79,6 +80,8 @@ export class UsersService {
         publicKey: user.publicKey,
         organization: org,
         userRole: user.userRole,
+        position: user.position,
+        deptName: user.deptName,
       }),
     );
   }
@@ -104,7 +107,11 @@ export class UsersService {
       userDb,
     );
 
-    return { token: authMap.authUserUuid, refreshToken: authMap.refreshUuid };
+    return {
+      token: authMap.authUserUuid,
+      refreshToken: authMap.refreshUuid,
+      position: userDb.position,
+    };
   }
 
   async updatePassword(
@@ -132,5 +139,14 @@ export class UsersService {
     );
 
     return { message: strings.PASSWORD_UPDATED };
+  }
+
+  async fetchOrgUserList(orgName: string) {
+    const [userList, count] = await this.usersRepository.findAndCount({
+      where: { organization: { name: orgName } },
+      relations: ['organization'],
+    });
+
+    return { users: userList.map(mapUserToUserDto), count };
   }
 }

@@ -11,7 +11,7 @@ import {
 import { UserRole } from '../dto/users.enum';
 import { AuthMapping } from '@app/modules/authMapping/entity/authMapping.entity';
 
-@Entity({ name: 'userss' })
+@Entity({ name: 'users' })
 @Unique(['username', 'organization']) // This ensures that each user within org is unique
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -34,6 +34,12 @@ export class User extends BaseEntity {
     default: UserRole.Client,
   })
   userRole: UserRole;
+
+  @Column({ name: 'position', nullable: false })
+  position: string;
+
+  @Column({ name: 'dept_name', nullable: false })
+  deptName: string;
 
   @Column({ name: 'recoverable_key', nullable: false })
   recoverableKey: string;

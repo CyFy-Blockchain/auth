@@ -1,9 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 import { UsersService } from '../services/users.service';
 import {
+  GetOrgUsersListResponse,
   SigninUserRequest,
   SigninUserResponse,
   UpdatePasswordRequest,
@@ -39,5 +40,20 @@ export class UsersController {
     @Body() body: UpdatePasswordRequest,
   ): Promise<UpdatePasswordResponse> {
     return await this.usersService.updatePassword(body);
+  }
+
+  @Get('/organization/:organization_name')
+  @ApiOperation({
+    summary: 'Fetch all users of an organization',
+    description:
+      'This Endpoint fetches all the users in the organization along with their total count in the DB',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'All users against the specified organization',
+    type: GetOrgUsersListResponse,
+  })
+  async fetchOrgUsers(@Param('organization_name') organization: string) {
+    return await this.usersService.fetchOrgUserList(organization);
   }
 }

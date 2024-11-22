@@ -7,6 +7,8 @@ export interface RegisterUserRequestBody {
   username: string;
   orgName: string;
   role: UserRole;
+  certMetadata: string;
+  attr?: string;
 }
 
 export interface RegisterUserResponse {

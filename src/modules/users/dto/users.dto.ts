@@ -43,6 +43,10 @@ export class SigninUserResponse {
     required: true,
   })
   refreshToken: string;
+
+  @ApiProperty({ example: 'HOD', required: true })
+  @IsNotEmpty()
+  position: string;
 }
 
 export class SigninUserRequest {
@@ -88,6 +92,14 @@ export class CreateUser {
   })
   @IsEnum(UserRole)
   userRole?: UserRole;
+
+  @ApiProperty({ example: 'Computer Science', required: true })
+  @IsNotEmpty()
+  deptName: string;
+
+  @ApiProperty({ example: 'HOD', required: true })
+  @IsNotEmpty()
+  position: string;
 }
 
 export class UserDto {
@@ -131,6 +143,14 @@ export class UserDto {
   })
   @IsUUID()
   id: string;
+
+  @ApiProperty({ example: 'Computer Science', required: true })
+  @IsNotEmpty()
+  deptName: string;
+
+  @ApiProperty({ example: 'HOD', required: true })
+  @IsNotEmpty()
+  position: string;
 }
 
 export class UserPki {
@@ -140,4 +160,20 @@ export class UserPki {
     publicKey: string;
     orgName: string;
   };
+}
+
+// GET -> Users against organization
+
+export class GetOrgUsersListResponse {
+  @ApiProperty({
+    description: 'Array of users',
+    type: [UserDto],
+  })
+  users: UserDto[];
+
+  @ApiProperty({
+    description: 'Total count of users',
+    example: 10,
+  })
+  count: number;
 }
