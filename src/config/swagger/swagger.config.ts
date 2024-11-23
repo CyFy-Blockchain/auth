@@ -9,6 +9,7 @@ export const swaggerConfig = new DocumentBuilder()
   .setDescription('This documentation is for Auth documentation')
   .setVersion('1.0.0')
   .addServer('http://localhost:4000', 'Local environment')
+  .addServer('https://auth-5m69.onrender.com', 'Dev environment')
   .addApiKey(
     { type: 'apiKey', name: 'token', in: 'header' },
     'User token for authentication',

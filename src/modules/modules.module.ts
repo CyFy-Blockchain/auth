@@ -5,6 +5,7 @@ import { OrgsModule } from './orgs/orgs.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { ContractModule } from './contracts/contracts.module';
+import { DevTestingModule } from './devTesting/devTesting.module';
 
 type NestModuleType =
   | Type<any>
@@ -33,6 +34,7 @@ function getModuleWithPath(
     ...getModuleWithPath('organizations', OrgsModule),
     ...getModuleWithPath('admins', AdminModule),
     ...getModuleWithPath('contracts', ContractModule),
+    ...getModuleWithPath('devTesting', DevTestingModule),
   ],
 })
 export class ControllerModule {}
