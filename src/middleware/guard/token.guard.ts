@@ -36,7 +36,3 @@ export class TokenGuard implements CanActivate {
     return true;
   }
 }
-
-export function exportUserFromRequest(request: Request): AuthenticatedUser {
-  return request['user'];
-}
