@@ -5,7 +5,6 @@ import { SWAGGER_TAGS } from '@config/swagger/tags';
 import { ContractService } from '../services/contract.service';
 import { ContractCallRequest } from '../dto/contracts.dto';
 import { SwaggerAuth } from '@app/utils/decorators/swaggerAuth.decorator';
-import { exportUserFromRequest } from '@app/middleware/guard/token.guard';
 
 @ApiTags(SWAGGER_TAGS.CONTRACTS)
 @Controller()
@@ -24,7 +23,7 @@ export class ContractsController {
     @Body() contractCallParams: ContractCallRequest,
     @Req() request: Request,
   ): Promise<any> {
-    const user = exportUserFromRequest(request);
+    const user = request['user'];
     return await this.contractService.makeContractCall(
       contractCallParams,
       user,
