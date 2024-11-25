@@ -1,15 +1,18 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
 import { UsersService } from '../services/users.service';
 import {
+  AuthenticatedUser,
+  FabricTokenResponse,
   GetOrgUsersListResponse,
   SigninUserRequest,
   SigninUserResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
 } from '../dto/users.dto';
+import { SwaggerAuth } from '@app/utils/decorators/swaggerAuth.decorator';
 
 @ApiTags(SWAGGER_TAGS.USERS)
 @Controller()
@@ -55,5 +58,19 @@ export class UsersController {
   })
   async fetchOrgUsers(@Param('organization_name') organization: string) {
     return await this.usersService.fetchOrgUserList(organization);
+  }
+
+  @Get('/fabricToken')
+  @ApiOperation({ summary: 'Get Fabric UUID for the token user' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Get the Fabric UUID for the token provided user. This call is required to convert user UUID to Fabric UUID in order to perform transactions on Blockchains',
+    type: FabricTokenResponse,
+  })
+  @SwaggerAuth()
+  async fetchFabricUuid(@Req() request: Request): Promise<FabricTokenResponse> {
+    const authenticatedUser = request['user'] as AuthenticatedUser;
+    return { fabricToken: authenticatedUser.fabricUuid };
   }
 }

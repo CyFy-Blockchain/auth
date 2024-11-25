@@ -1,11 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class ContractCallRequest {
-  @IsNotEmpty()
-  @IsUUID()
-  token: string;
-
   @ApiProperty({
     example: 'myChannel',
     description: 'Name of the channel that has the contract',

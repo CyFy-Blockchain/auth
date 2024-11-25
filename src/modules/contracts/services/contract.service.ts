@@ -3,33 +3,20 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { strings } from '@app/constants/strings';
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { ContractCallRequest } from '../dto/contracts.dto';
-import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
+import { AuthenticatedUser } from '@app/modules/users/dto/users.dto';
 
 @Injectable()
 export class ContractService {
-  constructor(
-    private axiosService: AxiosService,
-    private authMappingService: AuthMappingService,
-  ) {}
+  constructor(private axiosService: AxiosService) {}
 
-  async makeContractCall(contractCallParams: ContractCallRequest) {
-    // check if the token belongs to the admin
-    const fabricId = await this.authMappingService.fetchFabricUserUUID(
-      contractCallParams.token,
-    );
-    if (!fabricId)
-      throw new HttpException(
-        strings.USER_INVALID_CREDENTIALS,
-        HttpStatus.UNAUTHORIZED,
-      );
+  async makeContractCall(
+    contractCallParams: ContractCallRequest,
+    caller: AuthenticatedUser,
+  ) {
     try {
       const response = await this.axiosService.post(
         '/api/v1/auth/call-contract',
-        { ...contractCallParams, token: fabricId },
-      );
-      console.log(
-        '🚀 ~ ContractService ~ makeContractCall ~ response:',
-        response,
+        { ...contractCallParams, token: caller.fabricUuid },
       );
 
       return response;

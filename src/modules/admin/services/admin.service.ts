@@ -11,9 +11,8 @@ import {
 } from '../dto/admin.dto';
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { mapUserToUserDto } from '@app/modules/users/dto/users.mapper';
-import { UserDto } from '@app/modules/users/dto/users.dto';
+import { AuthenticatedUser, UserDto } from '@app/modules/users/dto/users.dto';
 import { UserRole } from '@app/modules/users/dto/users.enum';
-import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
 import { envVar } from '@app/config/env/default';
 import { CipherService } from '@app/modules/shared/cipher.service';
 import { generateString } from '@app/utils/helper';
@@ -24,7 +23,6 @@ export class AdminService {
   constructor(
     private userService: UsersService,
     private axiosService: AxiosService,
-    private authMappingService: AuthMappingService,
     private cipherService: CipherService,
   ) {}
 
@@ -59,57 +57,54 @@ export class AdminService {
     return mapUserToUserDto(savedUser);
   }
 
-  async registerUser(user: RegisterUserRequest): Promise<RegisterUserResponse> {
-    // check if the token belongs to the admin
-    const tokenUser = await this.authMappingService.fetchUserByAuthUUID(
-      user.token,
-    );
-    if (!tokenUser || tokenUser.organization.name !== user.orgName) {
+  async registerUser(
+    newUser: RegisterUserRequest,
+    caller: AuthenticatedUser,
+  ): Promise<RegisterUserResponse> {
+    // caller must be an admin
+    if (caller.userRole !== UserRole.Admin)
       throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
-    }
+
+    // caller can only register users in his own organization
+    const orgName = caller.organization.name;
 
     // check if the username already exists
     const userDb = await this.userService.fetchOrgUser(
-      user.username,
-      user.orgName,
+      newUser.username,
+      orgName,
     );
     if (userDb) {
       throw new HttpException(strings.USER_ALREADY_EXISTS, HttpStatus.CONFLICT);
     }
 
-    // convert Auth UUID to Fabric UUID
-    const fabricUUID = await this.authMappingService.fetchFabricUserUUID(
-      user.token,
-    );
-
     // POST Fabric to create account on HLF
     const registerBody = {
-      username: user.username,
-      orgName: user.orgName,
-      role: user.userRole,
+      username: newUser.username,
+      orgName: orgName,
+      role: newUser.userRole,
       // certMetadata is added in the user's certificate. It defines the user's rights, and roles on a contract
       // Fabric expects a comma separated metadata string
-      certMetadata: user.position + ',' + user.deptName,
-      attr: user.attr,
+      certMetadata: newUser.position + ',' + newUser.deptName,
+      attr: newUser.attr,
     };
     const response = await this.axiosService.post(
       '/api/v1/auth/signup',
       registerBody,
       {
-        headers: { authorization: fabricUUID },
+        headers: { authorization: caller.fabricUuid },
       },
     );
 
     // save user to DB
     await this.userService.addUserInDb({
-      username: user.username,
-      orgName: user.orgName,
+      username: newUser.username,
+      orgName: orgName,
       password: response.secret,
       privateKey: response.privateKey,
       publicKey: response.publicKey,
-      userRole: user.userRole,
-      position: user.position,
-      deptName: user.deptName,
+      userRole: newUser.userRole,
+      position: newUser.position,
+      deptName: newUser.deptName,
     });
 
     // respond with secret
@@ -118,15 +113,22 @@ export class AdminService {
 
   async recoverUserPassword(
     body: RecoverPasswordRequest,
+    caller: AuthenticatedUser,
   ): Promise<RecoverPasswordResponse> {
-    const userPki = await this.userService.fetchOrgUser(
-      body.username,
-      body.orgName,
-    );
+    // caller must be an admin
+    if (caller.userRole !== UserRole.Admin)
+      throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
+
+    // caller can only recover password for the accounts in his own organisation
+    const orgName = caller.organization.name;
+
+    // fetch the PKI for the user in body
+    const userPki = await this.userService.fetchOrgUser(body.username, orgName);
     if (!userPki) {
       throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
+    // replace the password with the random string generated
     const secret = generateString();
 
     const decryptedKey = this.cipherService.decrypt(

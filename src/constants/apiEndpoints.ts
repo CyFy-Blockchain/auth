@@ -33,6 +33,11 @@ export interface AdminLoginResponse {
   publicKey: string;
 }
 
+// Call Contract Request
+export interface CallContractRequestWithToken extends ContractCallRequest {
+  token: string;
+}
+
 // Create a mapping interface for URLs
 export interface ApiEndpoints {
   '/api/v1/auth/signup': {
@@ -48,7 +53,7 @@ export interface ApiEndpoints {
     response: AdminLoginResponse;
   };
   '/api/v1/auth/call-contract': {
-    request: ContractCallRequest;
+    request: CallContractRequestWithToken;
     response: any; // Replace with actual response type
   };
 }
