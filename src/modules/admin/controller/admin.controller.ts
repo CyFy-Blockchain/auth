@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post, Put } from '@nestjs/common';
+import { Body, Controller, Post, Put, Req } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
@@ -11,6 +11,7 @@ import {
 } from '../dto/admin.dto';
 import { AdminService } from '../services/admin.service';
 import { UserDto } from '@app/modules/users/dto/users.dto';
+import { SwaggerAuth } from '@app/utils/decorators/swaggerAuth.decorator';
 
 @ApiTags(SWAGGER_TAGS.ADMINS)
 @Controller()
@@ -39,11 +40,13 @@ export class AdminController {
     description: 'User is successfully registered in blockchain',
     type: RegisterUserResponse,
   })
+  @SwaggerAuth()
   async registerUser(
     @Body() user: RegisterUserRequest,
-    @Headers('token') token: string,
+    @Req() request: Request,
   ): Promise<RegisterUserResponse> {
-    return await this.adminService.registerUser({ ...user, token });
+    const authenticatedUser = request['user'];
+    return await this.adminService.registerUser(user, authenticatedUser);
   }
 
   @Put('/recover-password')
@@ -53,13 +56,12 @@ export class AdminController {
     description: 'Password has been successfully updated',
     type: RecoverPasswordResponse,
   })
+  @SwaggerAuth()
   async recoverPassword(
     @Body() body: RecoverPasswordRequest,
-    @Headers('token') token: string,
+    @Req() request: Request,
   ): Promise<RecoverPasswordResponse> {
-    return await this.adminService.recoverUserPassword({
-      ...body,
-      token: token,
-    });
+    const authenticatedUser = request['user'];
+    return await this.adminService.recoverUserPassword(body, authenticatedUser);
   }
 }

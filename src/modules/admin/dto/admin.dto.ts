@@ -1,6 +1,6 @@
 import { UserRole } from '@app/modules/users/dto/users.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
 // POST -> Admin login from Blockchain
 export class AdminLoginRequest {
@@ -24,10 +24,6 @@ export class RegisterUserRequest {
   @IsNotEmpty()
   username: string;
 
-  @ApiProperty({ example: 'org1', required: true })
-  @IsNotEmpty()
-  orgName: string;
-
   @ApiProperty({
     example: UserRole.Client,
     enum: UserRole,
@@ -35,10 +31,6 @@ export class RegisterUserRequest {
   })
   @IsEnum(UserRole)
   userRole: UserRole;
-
-  @IsUUID()
-  @IsNotEmpty()
-  token: string;
 
   @ApiProperty({
     example: 'HOD,Teacher,CS',
@@ -67,14 +59,6 @@ export class RecoverPasswordRequest {
   @ApiProperty({ example: 'testUser', required: true })
   @IsNotEmpty()
   username: string;
-
-  @ApiProperty({ example: 'org1', required: true })
-  @IsNotEmpty()
-  orgName: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  token: string;
 }
 
 export class RecoverPasswordResponse {

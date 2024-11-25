@@ -63,6 +63,15 @@ export class SigninUserRequest {
   password: string;
 }
 
+// GET -> fabric UUID
+export class FabricTokenResponse {
+  @ApiProperty({
+    example: 'bc649a94-0300-4136-aa4a-0fc51f581ab4',
+    required: true,
+  })
+  fabricToken: string;
+}
+
 // Service Types
 export class CreateUser {
   @ApiProperty({ example: 'admin', required: true })
@@ -176,4 +185,8 @@ export class GetOrgUsersListResponse {
     example: 10,
   })
   count: number;
+}
+
+export class AuthenticatedUser extends User {
+  fabricUuid?: string;
 }
