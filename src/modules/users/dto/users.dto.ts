@@ -7,21 +7,13 @@ import { User } from '../entities/users.entity';
 
 // POST -> Update password
 export class UpdatePasswordRequest {
-  @ApiProperty({ example: 'org1', required: true })
+  @ApiProperty({ example: 'oldPassword', required: true })
   @IsNotEmpty()
-  orgName: string;
-
-  @ApiProperty({ example: 'testUser', required: true })
-  @IsNotEmpty()
-  username: string;
+  oldPassword: string;
 
   @ApiProperty({ example: 'password', required: true })
   @IsNotEmpty()
   newPassword: string;
-
-  @ApiProperty({ example: 'oldPassword', required: true })
-  @IsNotEmpty()
-  oldPassword: string;
 }
 
 export class UpdatePasswordResponse {

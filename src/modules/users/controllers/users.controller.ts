@@ -11,8 +11,10 @@ import {
   SigninUserResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
+  UserDto,
 } from '../dto/users.dto';
 import { SwaggerAuth } from '@app/utils/decorators/swaggerAuth.decorator';
+import { mapUserToUserDto } from '../dto/users.mapper';
 
 @ApiTags(SWAGGER_TAGS.USERS)
 @Controller()
@@ -39,10 +41,13 @@ export class UsersController {
     description: 'Password has been updated',
     type: UpdatePasswordResponse,
   })
+  @SwaggerAuth()
   async updatePassword(
     @Body() body: UpdatePasswordRequest,
+    @Req() request: Request,
   ): Promise<UpdatePasswordResponse> {
-    return await this.usersService.updatePassword(body);
+    const authenticatedUser = request['user'];
+    return await this.usersService.updatePassword(body, authenticatedUser);
   }
 
   @Get('/organization/:organization_name')
@@ -56,6 +61,7 @@ export class UsersController {
     description: 'All users against the specified organization',
     type: GetOrgUsersListResponse,
   })
+  @SwaggerAuth()
   async fetchOrgUsers(@Param('organization_name') organization: string) {
     return await this.usersService.fetchOrgUserList(organization);
   }
@@ -72,5 +78,19 @@ export class UsersController {
   async fetchFabricUuid(@Req() request: Request): Promise<FabricTokenResponse> {
     const authenticatedUser = request['user'] as AuthenticatedUser;
     return { fabricToken: authenticatedUser.fabricUuid };
+  }
+
+  @Get('/profile')
+  @ApiOperation({ summary: 'Get the user profile' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'This request fetches the active user profile. This will return the user info for the provided token',
+    type: UserDto,
+  })
+  @SwaggerAuth()
+  async fetchActiveUser(@Req() request: Request): Promise<UserDto> {
+    const authenticatedUser = request['user'] as AuthenticatedUser;
+    return mapUserToUserDto(authenticatedUser);
   }
 }
