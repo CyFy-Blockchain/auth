@@ -11,6 +11,7 @@ import {
   UserPki,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
+  AuthenticatedUser,
 } from '../dto/users.dto';
 import { CipherService } from '@app/modules/shared/cipher.service';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
@@ -116,20 +117,22 @@ export class UsersService {
 
   async updatePassword(
     body: UpdatePasswordRequest,
+    caller: AuthenticatedUser,
   ): Promise<UpdatePasswordResponse> {
-    const user = await this.fetchOrgUser(body.username, body.orgName);
-    if (!user) {
-      throw new HttpException(strings.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
+    // caller should only be able to update his own password
+    const orgName = caller.organization.name;
+    const username = caller.username;
 
+    // fetch user PKI to update the encrypted Private Key
     const { pki } = await this.fetchUserPki(
-      body.username,
-      body.orgName,
+      username,
+      orgName,
       body.oldPassword,
     );
 
+    // update the password with the new encrypted private key
     await this.usersRepository.update(
-      { id: user.id },
+      { id: caller.id },
       {
         privateKey: this.cipherService.encrypt(
           pki.privateKey,
@@ -138,6 +141,7 @@ export class UsersService {
       },
     );
 
+    // respond with a success message
     return { message: strings.PASSWORD_UPDATED };
   }
 
