@@ -73,3 +73,15 @@ To show migrations
 ```bash
 npm run migration:show
 ```
+
+## View Public Certificate Information
+
+You can view the public certificate information using the following command:
+
+```
+openssl x509 -text -noout <<EOF
+-----BEGIN CERTIFICATE-----
+...paste public certificate from DB here...
+-----END CERTIFICATE-----
+EOF
+```
