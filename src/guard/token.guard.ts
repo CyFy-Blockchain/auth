@@ -20,12 +20,18 @@ export class TokenGuard implements CanActivate {
       throw new HttpException(strings.MISSING_TOKEN, HttpStatus.UNAUTHORIZED);
     }
 
+    // does the user exist
     const user: AuthenticatedUser =
       await this.authMappingService.fetchUserByAuthUUID(token as string);
+    if (!user) {
+      throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
+    }
+
+    // does the user have fabric UUID in DB
     const fabricUuid = await this.authMappingService.fetchFabricUserUUID(
       token as string,
     );
-    if (!user || !fabricUuid) {
+    if (!fabricUuid) {
       throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
     }
 

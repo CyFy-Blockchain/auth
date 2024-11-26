@@ -8,7 +8,7 @@ import {
   RecoverPasswordResponse,
   RegisterUserRequest,
   RegisterUserResponse,
-} from '../dto/admin.dto';
+} from '@app/modules/admin/dto/admin.dto';
 import { AxiosService } from '@app/modules/shared/axios.service';
 import { mapUserToUserDto } from '@app/modules/users/dto/users.mapper';
 import { AuthenticatedUser, UserDto } from '@app/modules/users/dto/users.dto';
@@ -61,10 +61,6 @@ export class AdminService {
     newUser: RegisterUserRequest,
     caller: AuthenticatedUser,
   ): Promise<RegisterUserResponse> {
-    // caller must be an admin
-    if (caller.userRole !== UserRole.Admin)
-      throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
-
     // caller can only register users in his own organization
     const orgName = caller.organization.name;
 
@@ -115,10 +111,6 @@ export class AdminService {
     body: RecoverPasswordRequest,
     caller: AuthenticatedUser,
   ): Promise<RecoverPasswordResponse> {
-    // caller must be an admin
-    if (caller.userRole !== UserRole.Admin)
-      throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
-
     // caller can only recover password for the accounts in his own organisation
     const orgName = caller.organization.name;
 
