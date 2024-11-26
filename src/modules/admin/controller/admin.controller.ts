@@ -12,6 +12,8 @@ import {
 import { AdminService } from '../services/admin.service';
 import { UserDto } from '@app/modules/users/dto/users.dto';
 import { SwaggerAuth } from '@app/utils/decorators/swaggerAuth.decorator';
+import { UserRole } from '@app/modules/users/dto/users.enum';
+import { Roles } from '@app/utils/decorators/roles.decorator';
 
 @ApiTags(SWAGGER_TAGS.ADMINS)
 @Controller()
@@ -41,6 +43,7 @@ export class AdminController {
     type: RegisterUserResponse,
   })
   @SwaggerAuth()
+  @Roles(UserRole.Admin)
   async registerUser(
     @Body() user: RegisterUserRequest,
     @Req() request: Request,
@@ -57,6 +60,7 @@ export class AdminController {
     type: RecoverPasswordResponse,
   })
   @SwaggerAuth()
+  @Roles(UserRole.Admin)
   async recoverPassword(
     @Body() body: RecoverPasswordRequest,
     @Req() request: Request,
