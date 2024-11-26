@@ -1,5 +1,5 @@
 import { strings } from '@app/constants/strings';
-import { TokenGuard } from '@app/middleware/guard/token.guard';
+import { TokenGuard } from '@app/guard/token.guard';
 import { applyDecorators, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiResponse } from '@nestjs/swagger';
 
