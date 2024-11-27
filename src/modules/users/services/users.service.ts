@@ -12,6 +12,7 @@ import {
   UpdatePasswordRequest,
   UpdatePasswordResponse,
   AuthenticatedUser,
+  RefreshTokenResponse,
 } from '../dto/users.dto';
 import { CipherService } from '@app/modules/shared/cipher.service';
 import { AuthMappingService } from '@app/modules/authMapping/services/authMapping.services';
@@ -152,5 +153,18 @@ export class UsersService {
     });
 
     return { users: userList.map(mapUserToUserDto), count };
+  }
+
+  async refreshAccessToken(
+    refreshToken: string,
+  ): Promise<RefreshTokenResponse> {
+    const authMap = await this.authMappingService.refreshAccessToken(
+      refreshToken,
+    );
+
+    if (!authMap)
+      throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
+
+    return { accessToken: authMap.authUserUuid };
   }
 }

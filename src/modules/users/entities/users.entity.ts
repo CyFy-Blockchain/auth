@@ -2,7 +2,6 @@ import { Organization } from '@app/modules/orgs/entities/orgs.entity';
 import {
   Column,
   Entity,
-  BaseEntity,
   PrimaryGeneratedColumn,
   ManyToOne,
   Unique,
@@ -10,10 +9,11 @@ import {
 } from 'typeorm';
 import { UserRole } from '../dto/users.enum';
 import { AuthMapping } from '@app/modules/authMapping/entity/authMapping.entity';
+import { TimestampedEntity } from '@app/modules/shared/entities/timestamped.entity';
 
 @Entity({ name: 'users' })
 @Unique(['username', 'organization']) // This ensures that each user within org is unique
-export class User extends BaseEntity {
+export class User extends TimestampedEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
