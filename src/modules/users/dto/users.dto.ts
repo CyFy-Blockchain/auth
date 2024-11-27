@@ -182,3 +182,14 @@ export class GetOrgUsersListResponse {
 export class AuthenticatedUser extends User {
   fabricUuid?: string;
 }
+
+// GET -> refresh token
+export class RefreshTokenResponse {
+  @ApiProperty({
+    example: '1a973561-939d-4ae9-aad9-de1b80ce69f9',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsUUID()
+  accessToken: string;
+}

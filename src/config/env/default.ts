@@ -14,4 +14,9 @@ export const envVar = {
   fabric: {
     gatewayBaseUrl: process.env.FABRIC_GW_BASE_URL,
   },
+  token: {
+    accessExpiryDays: Number(process.env.ACCESS_TOKEN_EXPIRY_DAYS),
+    refreshExpiryDays: Number(process.env.REFRESH_TOKEN_EXPIRY_DAYS),
+    cleanupCron: process.env.TOKEN_CLEANUP_CRON,
+  },
 };

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  Headers,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { SWAGGER_TAGS } from '@config/swagger/tags';
@@ -12,6 +20,7 @@ import {
   UpdatePasswordRequest,
   UpdatePasswordResponse,
   UserDto,
+  RefreshTokenResponse,
 } from '../dto/users.dto';
 import { SwaggerAuth } from '@app/utils/decorators/swaggerAuth.decorator';
 import { mapUserToUserDto } from '../dto/users.mapper';
@@ -92,5 +101,17 @@ export class UsersController {
   async fetchActiveUser(@Req() request: Request): Promise<UserDto> {
     const authenticatedUser = request['user'] as AuthenticatedUser;
     return mapUserToUserDto(authenticatedUser);
+  }
+
+  @Get('/refreshToken')
+  @ApiOperation({ summary: 'Refresh access token using refresh token' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'This request expects refresh token in the request. API responds with a newly created access token',
+    type: RefreshTokenResponse,
+  })
+  async refreshToken(@Headers('refreshToken') refreshToken: string) {
+    return await this.usersService.refreshAccessToken(refreshToken);
   }
 }

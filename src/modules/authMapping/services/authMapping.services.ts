@@ -1,11 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { LessThan, MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { envVar } from '@app/config/env/default';
 import { strings } from '@app/constants/strings';
 import { AuthMapping } from '../entity/authMapping.entity';
-import { generateUuid } from '@app/utils/helper';
+import { generateUuid, daysAgoDate } from '@app/utils/helper';
 import { User } from '@app/modules/users/entities/users.entity';
+
+const { accessExpiryDays, refreshExpiryDays } = envVar.token;
 
 @Injectable()
 export class AuthMappingService {
@@ -14,9 +17,13 @@ export class AuthMappingService {
     private authMappingRepository: Repository<AuthMapping>,
   ) {}
 
-  async addFabricUserUuid(fabricUserUUID: string, user: User) {
+  // refreshUuid will be null for refreshing access tokens. Refresh token will contain value only at the time of login
+  async addFabricUserUuid(
+    fabricUserUUID: string,
+    user: User,
+    refreshUuid: string | null = generateUuid(),
+  ) {
     const authUuid = generateUuid();
-    const refreshUuid = generateUuid();
     const authMapping = this.authMappingRepository.create({
       fabricUserUuid: fabricUserUUID,
       authUserUuid: authUuid,
@@ -28,7 +35,10 @@ export class AuthMappingService {
 
   async fetchFabricUserUUID(authUUID: string) {
     const authMapping = await this.authMappingRepository.findOne({
-      where: { authUserUuid: authUUID },
+      where: {
+        authUserUuid: authUUID,
+        created_at: MoreThan(daysAgoDate(accessExpiryDays)),
+      },
     });
     if (!authMapping) {
       throw new HttpException(strings.INVALID_TOKEN, HttpStatus.UNAUTHORIZED);
@@ -39,10 +49,41 @@ export class AuthMappingService {
 
   async fetchUserByAuthUUID(authUUID: string) {
     const authMapping = await this.authMappingRepository.findOne({
-      where: { authUserUuid: authUUID },
+      where: {
+        authUserUuid: authUUID,
+        created_at: MoreThan(daysAgoDate(accessExpiryDays)),
+      },
       relations: ['user.organization'],
     });
 
     return authMapping?.user;
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    // fetch auth mapping with refresh token within the refresh token expiry date
+    const authMapping = await this.authMappingRepository.findOne({
+      where: {
+        refreshUuid: refreshToken,
+        created_at: MoreThan(daysAgoDate(refreshExpiryDays)),
+      },
+      relations: ['user'],
+    });
+
+    if (!authMapping) return null;
+
+    // create a new access token
+    // refresh token will only be stored upon login. For all access token generations, refresh token will be null
+    // This is to keep track of refresh token so it can be invalidated after its expiry
+    return await this.addFabricUserUuid(
+      authMapping.fabricUserUuid,
+      authMapping.user,
+      null,
+    );
+  }
+
+  async deleteExpiredTokens() {
+    return await this.authMappingRepository.delete({
+      created_at: LessThan(daysAgoDate(accessExpiryDays + refreshExpiryDays)),
+    });
   }
 }

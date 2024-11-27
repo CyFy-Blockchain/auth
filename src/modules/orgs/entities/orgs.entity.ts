@@ -1,14 +1,9 @@
+import { TimestampedEntity } from '@app/modules/shared/entities/timestamped.entity';
 import { User } from '@app/modules/users/entities/users.entity';
-import {
-  Column,
-  Entity,
-  BaseEntity,
-  PrimaryGeneratedColumn,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'organizations' })
-export class Organization extends BaseEntity {
+export class Organization extends TimestampedEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
