@@ -43,7 +43,7 @@ export class UsersController {
     return await this.usersService.signinUser(user);
   }
 
-  @Post('/update_password')
+  @Post('/update-password')
   @ApiOperation({ summary: 'Update the password of the user' })
   @ApiResponse({
     status: 201,
@@ -75,7 +75,7 @@ export class UsersController {
     return await this.usersService.fetchOrgUserList(organization);
   }
 
-  @Get('/fabric_token')
+  @Get('/fabric-token')
   @ApiOperation({ summary: 'Get Fabric UUID for the token user' })
   @ApiResponse({
     status: 200,
@@ -103,7 +103,7 @@ export class UsersController {
     return mapUserToUserDto(authenticatedUser);
   }
 
-  @Get('/refresh_token')
+  @Get('/refresh-token')
   @ApiOperation({ summary: 'Refresh access token using refresh token' })
   @ApiResponse({
     status: 200,
