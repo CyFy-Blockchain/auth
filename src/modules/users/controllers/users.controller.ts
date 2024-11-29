@@ -66,7 +66,7 @@ export class UsersController {
     return await this.usersService.fetchOrgUserList(organization);
   }
 
-  @Get('/fabricToken')
+  @Get('/fabric_token')
   @ApiOperation({ summary: 'Get Fabric UUID for the token user' })
   @ApiResponse({
     status: 200,
