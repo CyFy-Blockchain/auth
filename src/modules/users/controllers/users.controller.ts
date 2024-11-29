@@ -103,7 +103,7 @@ export class UsersController {
     return mapUserToUserDto(authenticatedUser);
   }
 
-  @Get('/refreshToken')
+  @Get('/refresh_token')
   @ApiOperation({ summary: 'Refresh access token using refresh token' })
   @ApiResponse({
     status: 200,
