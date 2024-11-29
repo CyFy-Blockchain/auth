@@ -10,12 +10,12 @@ export class DbCleanupService {
   constructor(private authMappingService: AuthMappingService) {}
   @Cron(cleanupCron)
   async tokenCleanup() {
-    console.log('Running token cleanup cron...');
+    console.info('Running token cleanup cron...');
 
     // Delete all expired tokens to reduce memory usage
     const response = await this.authMappingService.deleteExpiredTokens();
 
-    console.log(
+    console.info(
       'Token Cleanup completed with response: ' + JSON.stringify(response),
     );
   }
