@@ -22,7 +22,7 @@ export async function initializeApp(): Promise<void> {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  await app.listen(process.env.PORT || 3000, () => {
+  await app.listen(process.env.PORT || 4000, '0.0.0.0', () => {
     console.info(`Server running on Port: ${process.env.PORT}`);
   });
 }
